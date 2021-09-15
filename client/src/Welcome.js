@@ -14,7 +14,7 @@ export const lighter = '#E79E4F';
 
 export const button_hover = '#862A2F';
 
-const Button = withStyles({
+export const Button = withStyles({
   root: {
     backgroundColor: dark,
     color: lighter,
