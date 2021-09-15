@@ -17,6 +17,7 @@ class MyEditor extends React.Component {
     }
     this.downloadContent = this.downloadContent.bind(this);
     this.runCode = this.runCode.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
   }
 
   editorDidMount(editor, monaco) {
@@ -30,6 +31,31 @@ class MyEditor extends React.Component {
 
   runCode() {
     var code = this.state.code;
+    // TODO: antlr+
+  }
+
+  uploadFile(event) {
+    let file = event.target.files[0];
+    let reader = new FileReader();
+
+    reader.readAsText(file);
+
+    reader.onload = function() {
+      console.log(reader.result.toString());
+      // TODO: this.setState({ code: reader.result.toString() });
+    };
+
+    reader.onerror = function() {
+      console.log(reader.error);
+    };
+
+
+    /*if (file) {
+      let data = new FormData();
+      data.append('file', file);
+      console.log(data);
+      // axios.post('/files', data)...
+    }*/
   }
 
   downloadContent() {
@@ -64,7 +90,9 @@ class MyEditor extends React.Component {
         <Button
           onClick={this.downloadContent}
         >Download</Button>
-        <Button>Upload</Button>
+        <input type="file"
+               name="myFile"
+               onChange={this.uploadFile} />
         {
           //"we need to inform the user that the code will be stored on our server and ask if he is against it."
         }

@@ -10,7 +10,7 @@ io.on("connection", socket => {
     console.log(`User connected: ${id}`);
     socket.emit("your id", socket.id);
     socket.on("send message", body => {
-        console.log(`${id}: ${body.id} - ${body.body}`);
+        console.log(`${id}: ${body.name} - ${body.id} - ${body.body}`);
         io.emit("message", body)
     })
 })

@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef} from "react";
 import styled from "styled-components";
 import io from "socket.io-client";
+import {cookies} from "./App";
 
 export const Page = styled.div`
   display: flex;
@@ -103,30 +104,35 @@ const Chat = () => {
     socketRef.current = io.connect('/');
 
     socketRef.current.on("your id", id => {
+      console.log("106");
       setYourID(id);
     })
 
     socketRef.current.on("message", (message) => {
-      console.log("here");
+      console.log("111");
       receivedMessage(message);
     })
   }, []);
 
   function receivedMessage(message) {
+    console.log("117");
     setMessages(oldMsgs => [...oldMsgs, message]);
   }
 
   function sendMessage(e) {
+    console.log("122");
     e.preventDefault();
     const messageObject = {
       body: message,
       id: yourID,
+      name: cookies.get("name"),
     };
     setMessage("");
     socketRef.current.emit("send message", messageObject);
   }
 
   function handleChange(e) {
+    console.log("133");
     setMessage(e.target.value);
   }
 
@@ -145,6 +151,7 @@ const Chat = () => {
           }
           return (
             <PartnerRow key={index}>
+              {message.name}
               <PartnerMessage>
                 {message.body}
               </PartnerMessage>
