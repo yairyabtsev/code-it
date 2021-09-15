@@ -27,10 +27,13 @@ const Button = withStyles({
 export default class Welcome extends Component {
   constructor(props) {
     super(props);
-    this.state = {value: ''};
+    this.state = {
+      value: '',
+      loggedIn: false,
+    };
+
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-
   }
 
   handleChange(event) {
@@ -38,16 +41,17 @@ export default class Welcome extends Component {
   }
 
   handleSubmit(event) {
+    event.preventDefault();
+
     console.log('name: ' + this.state.value);
     cookies.set('name', this.state.value, { path: '/' });
     console.log(cookies.get('name'));
-    event.preventDefault();
 
+    this.setState({ loggedIn: true });
   }
 
   render() {
-    <Redirect push to="/game" />
-    return (
+    return this.state.loggedIn ? <Redirect push to="/game" /> : (
       <div className="Welcome">
         <header className="Welcome-header">
           <p>
