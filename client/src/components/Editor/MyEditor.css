@@ -1,0 +1,27 @@
+.MyEditor {
+    /* flex-basis: auto; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.MyEditor > section {
+    width: calc(100vw - 400px) !important;
+    max-height: 30vh;
+    overflow: hidden;
+}
+
+.MyEditor__MonacoEditor {
+
+}
+
+.MyEditor__ButtonsContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.MyEditor__ButtonsGroup > button {
+    margin: 0 8px;
+}
+

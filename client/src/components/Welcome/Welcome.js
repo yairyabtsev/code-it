@@ -3,8 +3,7 @@ import React, { Component } from 'react';
 import MUI_Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/styles';
 import { Redirect } from 'react-router';
-import {cookies} from './App'
-
+import {cookies} from '../../App'
 
 
 export const darker = '#321F28';

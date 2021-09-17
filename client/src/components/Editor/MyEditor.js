@@ -1,19 +1,21 @@
-import {Page} from "./Chat";
+import {Page} from "../Chat/Chat";
 import React from "react";
 import MonacoEditor from '@monaco-editor/react';
-import {Button} from "./Welcome"
+import {Button} from "../Welcome/Welcome"
+
+import './MyEditor.css';
 
 class MyEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      code: "void play() {\
-            \n\t// put your code here;\
-            \n\t// it doesn't necessary to use the infinite loop,\
-            \n\t// because after exiting from this function -\
-            \n\t// it will continue to work from the entry point.\
-            \n\
-          \n}",
+      code: `
+void play() {
+  // put your code here;
+  // it doesn't necessary to use the infinite loop,
+  // because after exiting from this function -
+  // it will continue to work from the entry point.
+}`,
     }
     this.downloadContent = this.downloadContent.bind(this);
     this.runCode = this.runCode.bind(this);
@@ -73,8 +75,9 @@ class MyEditor extends React.Component {
       selectOnLineNumbers: true
     };
     return (
-      <Page>
+      <Page className="MyEditor">
         <MonacoEditor
+          className="MyEditor__MonacoEditor"
           width="90vh"
           height="90vh"
           theme="vs-dark"
@@ -84,20 +87,24 @@ class MyEditor extends React.Component {
           onChange={this.onChange}
           editorDidMount={this.editorDidMount}
         />
-        <Button
-          onClick={this.runCode}
-        >Run</Button>
-        <Button
-          onClick={this.downloadContent}
-        >Download</Button>
-        <input type="file"
-               name="myFile"
-               onChange={this.uploadFile} />
-        {
-          //"we need to inform the user that the code will be stored on our server and ask if he is against it."
-        }
-        <Button>Save</Button>
-        <Button>Delete</Button>
+        <div className="MyEditor__ButtonsContainer">
+          <input
+            className="MyEditor__UploadButton"
+            ariaLabel="Upload your file"
+            type="file"
+            name="myFile"
+            onChange={this.uploadFile}
+          />
+          {
+            //"we need to inform the user that the code will be stored on our server and ask if he is against it."
+          }
+          <div className="MyEditor__ButtonsGroup">
+            <Button onClick={this.runCode}>Run</Button>
+            <Button onClick={this.downloadContent}>Download</Button>
+            <Button>Save</Button>
+            <Button>Delete</Button>
+          </div>
+        </div>
       </Page>
     );
   }

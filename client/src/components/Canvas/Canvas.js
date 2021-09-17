@@ -1,4 +1,4 @@
-import {Page} from "./Chat";
+import {Page} from "../Chat/Chat";
 import React from "react";
 
 const Canvas = () => {

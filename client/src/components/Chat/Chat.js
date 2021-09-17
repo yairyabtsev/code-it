@@ -1,7 +1,81 @@
 import React, {useState, useEffect, useRef} from "react";
 import styled from "styled-components";
 import io from "socket.io-client";
-import {cookies} from "./App";
+import {cookies} from "../../App";
+
+import './Chat.css';
+
+const Chat = () => {
+  const [yourID, setYourID] = useState();
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+
+  const socketRef = useRef();
+
+  useEffect(() => {
+    socketRef.current = io.connect('/');
+
+    socketRef.current.on("your id", id => {
+      console.log("106");
+      setYourID(id);
+    })
+
+    socketRef.current.on("message", (message) => {
+      console.log("111");
+      receivedMessage(message);
+    })
+  }, []);
+
+  function receivedMessage(message) {
+    console.log("117");
+    setMessages(oldMsgs => [...oldMsgs, message]);
+  }
+
+  function sendMessage(e) {
+    console.log("122");
+    e.preventDefault();
+    const messageObject = {
+      body: message,
+      id: yourID,
+      name: cookies.get("name"),
+    };
+    setMessage("");
+    socketRef.current.emit("send message", messageObject);
+  }
+
+  function handleChange(e) {
+    console.log("133");
+    setMessage(e.target.value);
+  }
+
+  return (
+    <Page className="Chat">
+      <Container className="Chat__Content">
+        {messages.map((message, index) => (
+          message.id === yourID ?
+            <MyRow key={index}>
+              <MyMessage>
+                {message.body}
+              </MyMessage>
+            </MyRow> :
+            <PartnerRow key={index}>
+              {message.name}
+              <PartnerMessage>
+                {message.body}
+              </PartnerMessage>
+            </PartnerRow>
+        ))}
+      </Container>
+      <Form className="Chat__Form" onSubmit={sendMessage}>
+        <TextArea value={message} onChange={handleChange} placeholder="Say something..."/>
+        <Button>Send</Button>
+      </Form>
+    </Page>
+  );
+};
+
+export default Chat;
+
 
 export const Page = styled.div`
   display: flex;
@@ -92,79 +166,3 @@ const PartnerMessage = styled.div`
   border-top-left-radius: 10%;
   border-bottom-left-radius: 10%;
 `;
-
-const Chat = () => {
-  const [yourID, setYourID] = useState();
-  const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState("");
-
-  const socketRef = useRef();
-
-  useEffect(() => {
-    socketRef.current = io.connect('/');
-
-    socketRef.current.on("your id", id => {
-      console.log("106");
-      setYourID(id);
-    })
-
-    socketRef.current.on("message", (message) => {
-      console.log("111");
-      receivedMessage(message);
-    })
-  }, []);
-
-  function receivedMessage(message) {
-    console.log("117");
-    setMessages(oldMsgs => [...oldMsgs, message]);
-  }
-
-  function sendMessage(e) {
-    console.log("122");
-    e.preventDefault();
-    const messageObject = {
-      body: message,
-      id: yourID,
-      name: cookies.get("name"),
-    };
-    setMessage("");
-    socketRef.current.emit("send message", messageObject);
-  }
-
-  function handleChange(e) {
-    console.log("133");
-    setMessage(e.target.value);
-  }
-
-  return (
-    <Page>
-      <Container>
-        {messages.map((message, index) => {
-          if (message.id === yourID) {
-            return (
-              <MyRow key={index}>
-                <MyMessage>
-                  {message.body}
-                </MyMessage>
-              </MyRow>
-            )
-          }
-          return (
-            <PartnerRow key={index}>
-              {message.name}
-              <PartnerMessage>
-                {message.body}
-              </PartnerMessage>
-            </PartnerRow>
-          )
-        })}
-      </Container>
-      <Form onSubmit={sendMessage}>
-        <TextArea value={message} onChange={handleChange} placeholder="Say something..."/>
-        <Button>Send</Button>
-      </Form>
-    </Page>
-  );
-};
-
-export default Chat;

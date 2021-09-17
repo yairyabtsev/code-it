@@ -1,0 +1,12 @@
+.Chat {
+    flex-basis: 400px;
+    /* overflow: hidden; */
+}
+
+.Chat__Content {
+    width: 100%;
+}
+
+.Chat__Form {
+    width: 100%;
+}

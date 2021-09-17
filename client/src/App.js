@@ -1,9 +1,9 @@
 import React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import Welcome from './Welcome';
+import Welcome from './components/Welcome/Welcome';
 
 import Cookies from "universal-cookie";
-import Room from "./Room";
+import Room from "./components/miscellaneous/Room";
 
 export const cookies = new Cookies();
 
