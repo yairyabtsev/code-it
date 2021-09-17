@@ -33,7 +33,6 @@ class MyEditor extends React.Component {
   runCode() {
     var code = this.state.code;
     Compiler(code)
-    // TODO: antlr+
   }
 
   uploadFile(event) {
