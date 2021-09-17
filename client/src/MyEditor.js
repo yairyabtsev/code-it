@@ -2,6 +2,7 @@ import {Page} from "./Chat";
 import React from "react";
 import MonacoEditor from '@monaco-editor/react';
 import {Button} from "./Welcome"
+import {Compiler} from "./Compiler"
 
 class MyEditor extends React.Component {
   constructor(props) {
@@ -31,6 +32,7 @@ class MyEditor extends React.Component {
 
   runCode() {
     var code = this.state.code;
+    Compiler(code)
     // TODO: antlr+
   }
 
