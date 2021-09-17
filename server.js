@@ -4,6 +4,7 @@ const app = express();
 const server = http.createServer(app);
 const socket = require("socket.io");
 const io = socket(server);
+var { graphql, buildSchema } = require('graphql');
 
 io.on("connection", socket => {
     const { id } = socket.client;

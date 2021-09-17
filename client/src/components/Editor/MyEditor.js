@@ -4,6 +4,7 @@ import MonacoEditor from '@monaco-editor/react';
 import {Button} from "../Welcome/Welcome"
 
 import './MyEditor.css';
+import {Compiler} from "./Compiler"
 
 class MyEditor extends React.Component {
   constructor(props) {
@@ -33,7 +34,7 @@ void play() {
 
   runCode() {
     var code = this.state.code;
-    // TODO: antlr+
+    Compiler(code)
   }
 
   uploadFile(event) {
@@ -96,7 +97,7 @@ void play() {
             onChange={this.uploadFile}
           />
           {
-            //"we need to inform the user that the code will be stored on our server and ask if he is against it."
+            // TODO: "we need to inform the user that the code will be stored on our server and ask if he is against it."
           }
           <div className="MyEditor__ButtonsGroup">
             <Button onClick={this.runCode}>Run</Button>
