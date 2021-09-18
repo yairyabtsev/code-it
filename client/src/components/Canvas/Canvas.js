@@ -1,11 +1,12 @@
-import {Page} from "../Chat/Chat";
 import React from "react";
+
+import './Canvas.css';
 
 const Canvas = () => {
   return (
-    <Page>
+    <div className="Canvas">
 
-    </Page>
+    </div>
   );
 };
 

@@ -12,11 +12,15 @@ const Room = () => {
   // TODO: react-flash-message if redirect
   return !cookies.get('name') ? <Redirect push to="/"/> : (
     <Page className="Page">
-      <Canvas/>
-      <Score/>
       <div className="Page__InteractiveElements">
-        <MyEditor />
-        <Chat />
+        <div className="Page__Visual">
+          <Canvas />
+          <MyEditor />
+        </div>
+        <div className="Page__Functional">
+          <Score />
+          <Chat />
+        </div>
       </div>
     </Page>
   );

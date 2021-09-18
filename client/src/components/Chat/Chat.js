@@ -68,7 +68,7 @@ const Chat = () => {
       </Container>
       <Form className="Chat__Form" onSubmit={sendMessage}>
         <TextArea value={message} onChange={handleChange} placeholder="Say something..."/>
-        <Button>Send</Button>
+        <Button className="Chat__FormButton">Send</Button>
       </Form>
     </Page>
   );
@@ -90,25 +90,21 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 500px;
-  max-height: 500px;
   overflow: auto;
   width: 400px;
-  border: 1px solid lightgray;
-  border-radius: 10px;
   padding-bottom: 10px;
-  margin-top: 25px;
 `;
 
 const TextArea = styled.textarea`
-  width: 98%;
+  width: 100%;
   height: 100px;
-  border-radius: 10px;
   margin-top: 10px;
   padding-left: 10px;
-  padding-top: 10px;
+  padding-top: 11px;
   font-size: 17px;
   background-color: transparent;
-  border: 1px solid lightgray;
+  border-top: 1px solid #F8F6F5;
+  border-bottom: 2px solid transparent;
   outline: none;
   color: lightgray;
   letter-spacing: 1px;
@@ -117,16 +113,29 @@ const TextArea = styled.textarea`
   ::placeholder {
     color: lightgray;
   }
+
+  :focus {
+    border-top: 2px solid #F8F6F5;
+    border-bottom-color: #F8F6F5;
+    padding-top: 10px;
+  }
 `;
 
 export const Button = styled.button`
-  background-color: pink;
+  background-color: #D58677;
+  color: white !important;
   width: 100%;
   border: none;
   height: 50px;
   border-radius: 10px;
   color: #46516e;
   font-size: 17px;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: #8D586C;
+    cursor: pointer;
+  }
 `;
 
 const Form = styled.form`

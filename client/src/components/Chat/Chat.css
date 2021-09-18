@@ -1,12 +1,25 @@
 .Chat {
-    flex-basis: 400px;
-    /* overflow: hidden; */
+  background-color: #35364E !important;
+  width: auto !important;
+  overflow: hidden;
+  height: calc(100vh - 100px) !important;
 }
 
 .Chat__Content {
-    width: 100%;
+  width: 400px;
+  min-width: 300px;
+  margin-top: 0 !important;
+  flex-grow: 1;
 }
 
 .Chat__Form {
-    width: 100%;
+  width: 400px;
+  min-width: 300px;
+  text-align: center;
+}
+
+.Chat__FormButton {
+  width: 94% !important;
+  margin-top: 6px;
+  margin-bottom: 12px;
 }

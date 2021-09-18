@@ -1,27 +1,81 @@
 .MyEditor {
-    /* flex-basis: auto; */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+  width: calc(100vw - 400px) !important;
+  height: auto !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
-.MyEditor > section {
-    width: calc(100vw - 400px) !important;
-    max-height: 30vh;
-    overflow: hidden;
+.MyEditor>section {
+  overflow: hidden;
 }
 
 .MyEditor__MonacoEditor {
+  width: 100%;
+  height: 250px;
+  border: 1px solid #F8F6F5;
+  overflow: hidden;
+}
 
+.MyEditor__MonacoEditorTabs {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.MyEditor__MonacoEditorTabs span {
+  background-color: #ffbe0b;
+  padding: 4px;
+  border-radius: 4px;
+  margin: 0 6px;
+}
+
+.MyEditor__MonacoEditorTabs span:active {
+  background-color: #a37800;
+  color: #F1F0F0;
+}
+
+.MyEditor__MonacoEditorTabs span:hover {
+  cursor: pointer;
 }
 
 .MyEditor__ButtonsContainer {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  background-color: #35364E;
+  padding: 8px;
 }
 
-.MyEditor__ButtonsGroup > button {
-    margin: 0 8px;
+.MyEditor__ButtonsGroup>button {
+  margin: 0 6px;
 }
 
+.MyEditor__UploadButton {
+  font-size: 0.875rem;
+  padding: 6px;
+  border-radius: 6px;
+  color: white;
+  background-color: #D58677;
+  display: inline-block;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.MyEditor__UploadButton:hover {
+  cursor: pointer;
+  background-color: #8D586C;
+}
+
+.MyEditor__UploadButtonText {
+  margin-right: 6px;
+}
+
+.MyEditor__UploadButton [type='file'] {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}

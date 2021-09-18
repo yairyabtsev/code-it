@@ -1,0 +1,28 @@
+.Score {
+  position: relative;
+  height: 100px;
+  background-color: #52739C;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 2rem;
+  padding-top: 12px;
+  padding-left: 12px;
+  color: #EBEFF1;
+}
+
+.Score__Logo {
+  width: 16vh;
+  max-width: 85px;
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+.Score__Logo a {
+  text-decoration: none;
+}
+
+.Score__Logo img {
+  max-width: 100%;
+}
