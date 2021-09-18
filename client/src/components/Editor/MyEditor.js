@@ -5,11 +5,13 @@ import {Button} from "../Welcome/Welcome"
 
 import './MyEditor.css';
 import {Compiler} from "./Compiler/Compiler"
+import uploadIcon from '../../assets/upload.svg';
 
 class MyEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      editorLanguage: 'c',
       // TODO: read from file!?
       code: `
 //
@@ -106,6 +108,11 @@ void play() {
     atag.click();
   }
 
+  changeEditorLanguage = (type) => {
+    this.setState({ editorLanguage: type });
+    console.log(type);
+  }
+
   render() {
     const code = this.state.code;
     const options = {
@@ -113,25 +120,33 @@ void play() {
     };
     return (
       <Page className="MyEditor">
-        <MonacoEditor
+        <div 
           className="MyEditor__MonacoEditor"
-          width="90vh"
-          height="90vh"
-          theme="vs-dark"
-          defaultLanguage="c"
-          value={code}
-          options={options}
-          onChange={this.onChange}
-          editorDidMount={this.editorDidMount}
-        />
+        >
+          <div className="MyEditor__MonacoEditorTabs">
+            <span onClick={() => this.changeEditorLanguage('c')}>C</span>
+            <span onClick={() => this.changeEditorLanguage('javascript')}>JavaScript</span>
+          </div>
+          <MonacoEditor
+            theme="vs-dark"
+            defaultLanguage={this.state.editorLanguage}
+            value={code}
+            options={options}
+            onChange={this.onChange}
+            editorDidMount={this.editorDidMount}
+          />
+        </div>
         <div className="MyEditor__ButtonsContainer">
+        <label class="MyEditor__UploadButton">
           <input
-            className="MyEditor__UploadButton"
-            ariaLabel="Upload your file"
             type="file"
             name="myFile"
             onChange={this.uploadFile}
           />
+          <span className="MyEditor__UploadButtonText">Upload your file</span>
+          <img src={uploadIcon} alt="upload" />
+        </label>
+          
           {
             // TODO: "we need to inform the user that the code will be stored on our server and ask if he is against it."
           }

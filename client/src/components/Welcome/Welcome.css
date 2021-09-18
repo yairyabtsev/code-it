@@ -1,43 +1,41 @@
 .Welcome {
-    text-align: center;
+  background-color: #282c34;
+  text-align: center;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
 }
 
-.Welcome-logo {
-    height: 30vmin;
-    pointer-events: none;
+.Welcome__Logo {
+  width: 40vh;
+  position: absolute;
+  top: 10vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .Welcome-logo {
-        animation: Welcome-logo-spin infinite 20s linear;
-    }
+.Welcome__Logo img {
+  width: 100%;
+}
+
+.Welcome__Logo img:hover {
+  cursor: pointer;
 }
 
 .Welcome-header {
-    background-color: #282c34;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+  display: flex;
+  padding-top: 20vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
 }
 
 .Welcome-link {
-    color: #61dafb;
+  color: #61dafb;
 }
 
-@keyframes Welcome-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-input {
-    min-height: calc(10px + 2vmin);
-    min-width: calc(100px + 20vmin);
+.Welcome input {
+  min-height: calc(10px + 2vmin);
+  min-width: calc(100px + 20vmin);
+  margin-bottom: 14px;
 }
