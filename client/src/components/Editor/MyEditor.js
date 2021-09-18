@@ -79,12 +79,12 @@ void play() {
 
     reader.readAsText(file);
 
-    reader.onload = function() {
+    reader.onload = function () {
       console.log(reader.result.toString());
       // TODO: this.setState({ code: reader.result.toString() });
     };
 
-    reader.onerror = function() {
+    reader.onerror = function () {
       console.log(reader.error);
     };
 
@@ -136,6 +136,7 @@ void play() {
             // TODO: "we need to inform the user that the code will be stored on our server and ask if he is against it."
           }
           <div className="MyEditor__ButtonsGroup">
+            <Button>Random</Button>
             <Button onClick={this.runCode}>Run</Button>
             <Button onClick={this.downloadContent}>Download</Button>
             <Button>Save</Button>
