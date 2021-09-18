@@ -124,8 +124,7 @@ void play() {
           className="MyEditor__MonacoEditor"
         >
           <div className="MyEditor__MonacoEditorTabs">
-            <span onClick={() => this.changeEditorLanguage('c')}>C</span>
-            <span onClick={() => this.changeEditorLanguage('javascript')}>JavaScript</span>
+            <span onClick={() => this.changeEditorLanguage('c')}>mini-C</span>
           </div>
           <MonacoEditor
             theme="vs-dark"
