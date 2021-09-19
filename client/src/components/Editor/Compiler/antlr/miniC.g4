@@ -2,36 +2,37 @@ grammar miniC;
 
 code : object*;
 
-object : (((var_decl | struct) '}') | fun);
+object : (((var_decl | struct) ';') | fun);
 
-struct : 'struct' NAME '{' var_decl* '}';
-fun : Type NAME '(' (Type NAME (',' Type NAME)*)? ')' ('{' command* '}' | ';');
+struct : 'struct' NAME '{' (var_decl ';')* '}';
+fun : (Type| NAME) NAME '(' (Type NAME (',' Type NAME)*)? ')' ('{' command* '}' | ';');
 var_decl : Type ( NAME | init) (',' NAME | init)*;
-init : NAME '=' value;
+init : NAME Operator? '=' seq;
 
-seq   : Int | Float
+seq   : Int | Float | Bool | NAME
        | seq Operator seq
        ;
 
-value : seq Operator seq ;
 
 Int : DIGIT+;
 Float : Int ('.' | ',') Int;
 Bool : ('true' | 'false');
-arr : '[' value (',' value)* ']';
+arr : '[' seq (',' seq)* ']';
 
-command : ((var_decl | init) ';');
-/* | loop | cond | exit | jmp;*/
-Type  : 'Int' | 'Float' | 'void' | 'Bool';
+command : ((seq | var_decl | init | jmp | exit) ';') | cond | loop;
+/* | loop | cond;*/
+Type  : 'int' | 'float' | 'void' | 'bool';
 
-Operator : '+' | '-' | '*' | '%' | '/';
+Operator : '+' | '-' | '*' | '%' | '/' | '<<' | '>>' | '&&' | '||' | '|' | '&';
 
-/*
-loop :;
-cond :;
-exit :;
-jmp :;
-*/
+
+loop : ('while' '('seq ')' '{' command* '}')
+    | ('for' '('seq? ';'seq? ';'seq? ')' '{' command* '}')
+    | ('do' '{'command* '}' 'while' '('seq ')' ';');
+cond : 'if' '('seq ')' '{' command* '}';
+exit : ('break' | 'continue' | ( 'return' (seq)?));
+jmp : NAME '(' (seq (',' seq)*)? ')';
+
 
 Whitespace :   [ \t\r\n]+ -> skip;
 Comment : (('//' ~[\r\n]*) | ('/*' .*? '*/')) -> skip;
