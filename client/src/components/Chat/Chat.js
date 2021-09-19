@@ -6,24 +6,32 @@ import {cookies} from "../../App";
 import './Chat.css';
 
 const Chat = () => {
-  const [yourID, setYourID] = useState();
-  const [messages, setMessages] = useState([]);
+  const [yourID, setYourID] = useState(100);
+  const [messages, setMessages] = useState([
+    { id: 100, body: 'Hello!', name: 'Miguel' },
+    { id: 101, body: '', name: 'Yarr' },
+    { id: 100, body: 'mm rqwl ehewoih rqm', name: 'Miguel' },
+    { id: 101, body: 'mmm reh erij eqw;ner qpew n', name: 'Bonrey' },
+    { id: 100, body: 'mmmmfads nlwe n new ne nq ewnqeo ', name: 'Kekovich' },
+    { id: 101, body: 'mmmf fldsnf ln f nn fn wenr qlwenwe nfl nenrupq ', name: 'Lololo' },
+    { id: 100, body: 'fsdhaklhfjdlsfhlisdafhnlsdkvnifld fnldashfoiuwel', name: 'Kekovich' },
+  ]);
   const [message, setMessage] = useState("");
 
   const socketRef = useRef();
 
   useEffect(() => {
-    socketRef.current = io.connect('/');
+    // socketRef.current = io.connect('/');
 
-    socketRef.current.on("your id", id => {
-      console.log("106");
-      setYourID(id);
-    })
+    // socketRef.current.on("your id", id => {
+    //   console.log("106");
+    //   setYourID(id);
+    // })
 
-    socketRef.current.on("message", (message) => {
-      console.log("111");
-      receivedMessage(message);
-    })
+    // socketRef.current.on("message", (message) => {
+    //   console.log("111");
+    //   receivedMessage(message);
+    // })
   }, []);
 
   function receivedMessage(message) {
@@ -53,17 +61,17 @@ const Chat = () => {
       <Container className="Chat__Content">
         {messages.map((message, index) => (
           message.id === yourID ?
-            <MyRow key={index}>
+            (message.body && <MyRow key={index}>
               <MyMessage>
                 {message.body}
               </MyMessage>
-            </MyRow> :
-            <PartnerRow key={index}>
-              {message.name}
+            </MyRow>) :
+            (message.body && <PartnerRow key={index}>
+              <PartnerName>{message.name}</PartnerName>
               <PartnerMessage>
                 {message.body}
               </PartnerMessage>
-            </PartnerRow>
+            </PartnerRow>)
         ))}
       </Container>
       <Form className="Chat__Form" onSubmit={sendMessage}>
@@ -90,7 +98,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 500px;
-  overflow: auto;
+  overflow-y: auto;
   width: 400px;
   padding-bottom: 10px;
 `;
@@ -123,7 +131,7 @@ const TextArea = styled.textarea`
 
 export const Button = styled.button`
   background-color: #D58677;
-  color: white !important;
+  color: #f1f0f0 !important;
   width: 100%;
   border: none;
   height: 50px;
@@ -143,35 +151,38 @@ const Form = styled.form`
 `;
 
 const MyRow = styled.div`
-  width: 100%;
+  color: #F1F0F0;
   display: flex;
   justify-content: flex-end;
   margin-top: 10px;
 `;
 
 const MyMessage = styled.div`
-  width: 45%;
-  background-color: pink;
-  color: #46516e;
-  padding: 10px;
-  margin-right: 5px;
-  text-align: center;
-  border-top-right-radius: 10%;
-  border-bottom-right-radius: 10%;
+  width: 160px;
+  background-color: #DE755E;
+  color: #333;
+  padding: 6px;
+  margin-right: 10px;
+  border-radius: 8px 8px 16px 8px;
+  overflow-wrap: anywhere;
 `;
 
 const PartnerRow = styled(MyRow)`
   justify-content: flex-start;
+  flex-direction: column;
 `;
 
 const PartnerMessage = styled.div`
-  width: 45%;
-  background-color: transparent;
-  color: lightgray;
-  border: 1px solid lightgray;
-  padding: 10px;
-  margin-left: 5px;
-  text-align: center;
-  border-top-left-radius: 10%;
-  border-bottom-left-radius: 10%;
+  width: 160px;
+  background-color: #658EAB;
+  color: #F4F1F6;
+  padding: 6px;
+  margin-left: 10px;
+  border-radius: 8px 8px 8px 16px;  
+`;
+
+const PartnerName = styled.span`
+  margin-left: 10px;
+  margin-bottom: 5px;
+  font-weight: bold;
 `;
