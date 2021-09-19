@@ -6,36 +6,30 @@ import {cookies} from "../../App";
 import './Chat.css';
 
 const Chat = () => {
-  const [yourID, setYourID] = useState(100);
-  const [messages, setMessages] = useState([
-    { id: 100, body: 'Hello!', name: 'Miguel' },
-    { id: 101, body: '', name: 'Yarr' },
-    { id: 100, body: 'mm rqwl ehewoih rqm', name: 'Miguel' },
-    { id: 101, body: 'mmm reh erij eqw;ner qpew n', name: 'Bonrey' },
-    { id: 100, body: 'mmmmfads nlwe n new ne nq ewnqeo ', name: 'Kekovich' },
-    { id: 101, body: 'mmmf fldsnf ln f nn fn wenr qlwenwe nfl nenrupq ', name: 'Lololo' },
-    { id: 100, body: 'fsdhaklhfjdlsfhlisdafhnlsdkvnifld fnldashfoiuwel', name: 'Kekovich' },
-  ]);
+  const [yourID, setYourID] = useState();
+  const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
 
   const socketRef = useRef();
 
   useEffect(() => {
-    // socketRef.current = io.connect('/');
+    socketRef.current = io.connect('/');
 
-    // socketRef.current.on("your id", id => {
-    //   console.log("106");
-    //   setYourID(id);
-    // })
+    socketRef.current.on("your id", id => {
+      console.log("106");
+      setYourID(id);
+    })
 
-    // socketRef.current.on("message", (message) => {
-    //   console.log("111");
-    //   receivedMessage(message);
-    // })
+    socketRef.current.on("message", (message) => {
+      console.log("111");
+      receivedMessage(message);
+    })
   }, []);
 
   function receivedMessage(message) {
     console.log("117");
+    console.log(message.id)
+    // TODO: add (messages[messages.length-1].id === message.id) to some flag
     setMessages(oldMsgs => [...oldMsgs, message]);
   }
 
