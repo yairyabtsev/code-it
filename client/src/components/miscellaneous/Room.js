@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {Redirect} from 'react-router';
 import {cookies} from '../../App'
 import Chat, {Page} from "../Chat/Chat";
@@ -9,20 +9,34 @@ import MyEditor from "../Editor/MyEditor";
 import './Page.css';
 
 const Room = () => {
-  // TODO: react-flash-message if redirect
-  return !cookies.get('name') ? <Redirect push to="/"/> : (
-    <Page className="Page">
-      <div className="Page__InteractiveElements">
-        <div className="Page__Visual">
-          <Canvas />
-          <MyEditor />
+  const nameExists = cookies.get('name');
+  const [mainPageOpened, setMainPageOpened] = useState(nameExists);
+
+  useEffect(() => {
+    console.log(mainPageOpened);
+    if (!mainPageOpened) {
+      window.confirm('You need to choose a name. Redirecting to the Welcome page...');
+      setMainPageOpened(true);
+    }
+  }, [mainPageOpened]);
+
+  return mainPageOpened && (
+    !nameExists ? (
+      <Redirect push to="/"/>
+    ): (
+      <Page className="Page">
+        <div className="Page__InteractiveElements">
+          <div className="Page__Visual">
+            <Canvas />
+            <MyEditor />
+          </div>
+          <div className="Page__Functional">
+            <Score />
+            <Chat />
+          </div>
         </div>
-        <div className="Page__Functional">
-          <Score />
-          <Chat />
-        </div>
-      </div>
-    </Page>
+      </Page>
+    )
   );
 };
 
