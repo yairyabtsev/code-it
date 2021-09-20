@@ -22,11 +22,11 @@ const Chat = () => {
 
     socketRef.current.on("message", (message) => {
       console.log("111");
-      receivedMessage(message);
+      receiveMessage(message);
     })
   }, []);
 
-  function receivedMessage(message) {
+  function receiveMessage(message) {
     console.log("117");
     console.log(message.id)
     // TODO: add (messages[messages.length-1].id === message.id) to some flag
