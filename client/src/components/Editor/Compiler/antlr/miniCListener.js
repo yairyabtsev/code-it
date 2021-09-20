@@ -1,132 +1,117 @@
-// Generated from miniC.g4 by ANTLR 4.7.2
+// Generated from miniC.g4 by ANTLR 4.9
 // jshint ignore: start
-var antlr4 = require('antlr4/src/antlr4/index');
+import antlr4 from 'antlr4';
 
 // This class defines a complete listener for a parse tree produced by miniCParser.
-function miniCListener() {
-	antlr4.tree.ParseTreeListener.call(this);
-	return this;
+export default class miniCListener extends antlr4.tree.ParseTreeListener {
+
+	// Enter a parse tree produced by miniCParser#code.
+	enterCode(ctx) {
+	}
+
+	// Exit a parse tree produced by miniCParser#code.
+	exitCode(ctx) {
+	}
+
+
+	// Enter a parse tree produced by miniCParser#object.
+	enterObject(ctx) {
+	}
+
+	// Exit a parse tree produced by miniCParser#object.
+	exitObject(ctx) {
+	}
+
+
+	// Enter a parse tree produced by miniCParser#struct.
+	enterStruct(ctx) {
+	}
+
+	// Exit a parse tree produced by miniCParser#struct.
+	exitStruct(ctx) {
+	}
+
+
+	// Enter a parse tree produced by miniCParser#fun.
+	enterFun(ctx) {
+	}
+
+	// Exit a parse tree produced by miniCParser#fun.
+	exitFun(ctx) {
+	}
+
+
+	// Enter a parse tree produced by miniCParser#var_decl.
+	enterVar_decl(ctx) {
+	}
+
+	// Exit a parse tree produced by miniCParser#var_decl.
+	exitVar_decl(ctx) {
+	}
+
+
+	// Enter a parse tree produced by miniCParser#init.
+	enterInit(ctx) {
+	}
+
+	// Exit a parse tree produced by miniCParser#init.
+	exitInit(ctx) {
+	}
+
+
+	// Enter a parse tree produced by miniCParser#seq.
+	enterSeq(ctx) {
+	}
+
+	// Exit a parse tree produced by miniCParser#seq.
+	exitSeq(ctx) {
+	}
+
+
+	// Enter a parse tree produced by miniCParser#command.
+	enterCommand(ctx) {
+	}
+
+	// Exit a parse tree produced by miniCParser#command.
+	exitCommand(ctx) {
+	}
+
+
+	// Enter a parse tree produced by miniCParser#loop.
+	enterLoop(ctx) {
+	}
+
+	// Exit a parse tree produced by miniCParser#loop.
+	exitLoop(ctx) {
+	}
+
+
+	// Enter a parse tree produced by miniCParser#cond.
+	enterCond(ctx) {
+	}
+
+	// Exit a parse tree produced by miniCParser#cond.
+	exitCond(ctx) {
+	}
+
+
+	// Enter a parse tree produced by miniCParser#exit.
+	enterExit(ctx) {
+	}
+
+	// Exit a parse tree produced by miniCParser#exit.
+	exitExit(ctx) {
+	}
+
+
+	// Enter a parse tree produced by miniCParser#jmp.
+	enterJmp(ctx) {
+	}
+
+	// Exit a parse tree produced by miniCParser#jmp.
+	exitJmp(ctx) {
+	}
+
+
+
 }
-
-miniCListener.prototype = Object.create(antlr4.tree.ParseTreeListener.prototype);
-miniCListener.prototype.constructor = miniCListener;
-
-// Enter a parse tree produced by miniCParser#code.
-miniCListener.prototype.enterCode = function(ctx) {
-};
-
-// Exit a parse tree produced by miniCParser#code.
-miniCListener.prototype.exitCode = function(ctx) {
-};
-
-
-// Enter a parse tree produced by miniCParser#object.
-miniCListener.prototype.enterObject = function(ctx) {
-};
-
-// Exit a parse tree produced by miniCParser#object.
-miniCListener.prototype.exitObject = function(ctx) {
-};
-
-
-// Enter a parse tree produced by miniCParser#struct.
-miniCListener.prototype.enterStruct = function(ctx) {
-};
-
-// Exit a parse tree produced by miniCParser#struct.
-miniCListener.prototype.exitStruct = function(ctx) {
-};
-
-
-// Enter a parse tree produced by miniCParser#fun.
-miniCListener.prototype.enterFun = function(ctx) {
-};
-
-// Exit a parse tree produced by miniCParser#fun.
-miniCListener.prototype.exitFun = function(ctx) {
-};
-
-
-// Enter a parse tree produced by miniCParser#var_decl.
-miniCListener.prototype.enterVar_decl = function(ctx) {
-};
-
-// Exit a parse tree produced by miniCParser#var_decl.
-miniCListener.prototype.exitVar_decl = function(ctx) {
-};
-
-
-// Enter a parse tree produced by miniCParser#init.
-miniCListener.prototype.enterInit = function(ctx) {
-};
-
-// Exit a parse tree produced by miniCParser#init.
-miniCListener.prototype.exitInit = function(ctx) {
-};
-
-
-// Enter a parse tree produced by miniCParser#seq.
-miniCListener.prototype.enterSeq = function(ctx) {
-};
-
-// Exit a parse tree produced by miniCParser#seq.
-miniCListener.prototype.exitSeq = function(ctx) {
-};
-
-
-// Enter a parse tree produced by miniCParser#arr.
-miniCListener.prototype.enterArr = function(ctx) {
-};
-
-// Exit a parse tree produced by miniCParser#arr.
-miniCListener.prototype.exitArr = function(ctx) {
-};
-
-
-// Enter a parse tree produced by miniCParser#command.
-miniCListener.prototype.enterCommand = function(ctx) {
-};
-
-// Exit a parse tree produced by miniCParser#command.
-miniCListener.prototype.exitCommand = function(ctx) {
-};
-
-
-// Enter a parse tree produced by miniCParser#loop.
-miniCListener.prototype.enterLoop = function(ctx) {
-};
-
-// Exit a parse tree produced by miniCParser#loop.
-miniCListener.prototype.exitLoop = function(ctx) {
-};
-
-
-// Enter a parse tree produced by miniCParser#cond.
-miniCListener.prototype.enterCond = function(ctx) {
-};
-
-// Exit a parse tree produced by miniCParser#cond.
-miniCListener.prototype.exitCond = function(ctx) {
-};
-
-
-// Enter a parse tree produced by miniCParser#exit.
-miniCListener.prototype.enterExit = function(ctx) {
-};
-
-// Exit a parse tree produced by miniCParser#exit.
-miniCListener.prototype.exitExit = function(ctx) {
-};
-
-
-// Enter a parse tree produced by miniCParser#jmp.
-miniCListener.prototype.enterJmp = function(ctx) {
-};
-
-// Exit a parse tree produced by miniCParser#jmp.
-miniCListener.prototype.exitJmp = function(ctx) {
-};
-
-
-
-exports.miniCListener = miniCListener;

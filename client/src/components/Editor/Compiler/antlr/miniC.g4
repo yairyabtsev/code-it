@@ -1,5 +1,9 @@
 grammar miniC;
 
+options {
+	language=JavaScript;
+}
+
 code : object*;
 
 object : (((var_decl | struct) ';') | fun);
@@ -7,20 +11,19 @@ object : (((var_decl | struct) ';') | fun);
 struct : 'struct' NAME '{' (var_decl ';')* '}';
 fun : (Type| NAME) NAME '(' (Type NAME (',' Type NAME)*)? ')' ('{' command* '}' | ';');
 var_decl : Type ( NAME | init) (',' NAME | init)*;
-init : NAME Operator? '=' seq;
+init : NAME ('[' seq ']')? Operator? '=' seq;
 
-seq   : Int | Float | Bool | NAME
+seq   : Int | Float | Bool | NAME | NAME '[' seq ']' | '{' seq (',' seq)* '}'
        | seq Operator seq
        ;
 
 
-Int : DIGIT+;
-Float : Int ('.' | ',') Int;
+Int : ('-'|'+')? DIGIT+;
+Float : Int ('.' | ',') DIGIT+;
 Bool : ('true' | 'false');
-arr : '[' seq (',' seq)* ']';
 
 command : ((seq | var_decl | init | jmp | exit) ';') | cond | loop;
-/* | loop | cond;*/
+
 Type  : 'int' | 'float' | 'void' | 'bool';
 
 Operator : '+' | '-' | '*' | '%' | '/' | '<<' | '>>' | '&&' | '||' | '|' | '&';

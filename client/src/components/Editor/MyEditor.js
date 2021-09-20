@@ -22,7 +22,7 @@ class MyEditor extends React.Component {
 
     this.state = {
       editorLanguage: 'c',
-      code: localStorage.getItem('savedCode') ?? DEFAULT_CODE,
+      code: localStorage.getItem('./Compiler/antlr/Examples/test.1c') ?? DEFAULT_CODE,
       toastOpen: false,
     }
 
@@ -110,7 +110,7 @@ class MyEditor extends React.Component {
     return (
       <>
         <Page className="MyEditor">
-          <div 
+          <div
             className="MyEditor__MonacoEditor"
           >
             <div className="MyEditor__MonacoEditorTabs">
@@ -135,7 +135,7 @@ class MyEditor extends React.Component {
             <span className="MyEditor__UploadButtonText">Upload your file</span>
             <img src={uploadIcon} alt="upload" />
           </label>
-            
+
             {
               // TODO: "we need to inform the user that the code will be stored on our server and ask if he is against it."
             }
