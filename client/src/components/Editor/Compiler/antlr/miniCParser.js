@@ -1,6 +1,6 @@
 // Generated from miniC.g4 by ANTLR 4.7.2
 // jshint ignore: start
-var antlr4 = require('antlr4/index');
+var antlr4 = require('antlr4/src/antlr4/index');
 var miniCListener = require('./miniCListener').miniCListener;
 var grammarFileName = "miniC.g4";
 
