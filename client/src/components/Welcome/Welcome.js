@@ -60,7 +60,7 @@ export default class Welcome extends Component {
             which you can challenge other people to<br/> find out whose code is <i>stronger</i>.
           </p>
           <div className="Welcome-form">
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.handleSubmit} autoComplete="off">
               <input
                 name="user-name"
                 required
