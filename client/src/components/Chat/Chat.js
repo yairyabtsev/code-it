@@ -6,8 +6,19 @@ import {cookies} from "../../App";
 import './Chat.css';
 
 const Chat = () => {
-  const [yourID, setYourID] = useState();
-  const [messages, setMessages] = useState([]);
+  const [yourID, setYourID] = useState(100);
+  const [messages, setMessages] = useState([
+    { id: 100, body: 'Hello!' },
+    { id: 101, body: '', name: 'Yarr' },
+    { id: 101, body: 'Эй', name: 'Yarr' },
+    { id: 101, body: '...', name: 'Yarr' },
+    { id: 101, body: 'Ку ку ку ку ку', name: 'Yarr' },    
+    { id: 100, body: 'mm rqwl ehewoih rqm' },
+    { id: 101, body: 'mmm reh erij eqw;ner qpew n', name: 'Booka' },
+    { id: 101, body: 'mmmmfads nlwe n new ne nq ewnqeo ', name: 'Kekovich' },
+    { id: 101, body: 'mmmf fldsnf ln f nn fn wenr qlwenwe nfl nenrupq ', name: 'Lololo' },
+    { id: 100, body: 'fsdhaklhfjdlsfhlisdafhnlsdkvnifld fnldashfoiuwel' },
+  ]);
   const [message, setMessage] = useState("");
 
   const socketRef = useRef();
@@ -61,7 +72,7 @@ const Chat = () => {
               </MyMessage>
             </MyRow>) :
             (message.body && <PartnerRow key={index}>
-              <PartnerName>{message.name}</PartnerName>
+              {isNameShown(messages, index) && <PartnerName>{message.name}</PartnerName>}
               <PartnerMessage>
                 {message.body}
               </PartnerMessage>
@@ -77,6 +88,16 @@ const Chat = () => {
 };
 
 export default Chat;
+
+function isNameShown(messages, i) {
+  let j = i - 1;
+  
+  while (j >= 0 && !messages[j].body) {
+    j--;
+  }
+
+  return j === -1 || messages[j]?.name !== messages[i].name;
+}
 
 
 export const Page = styled.div`
