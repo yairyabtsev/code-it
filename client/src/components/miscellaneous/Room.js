@@ -9,7 +9,7 @@ import MyEditor from "../Editor/MyEditor";
 import './Page.css';
 
 const Room = () => {
-  const nameExists = cookies.get('name');
+  const nameExists = cookies.get('name') && cookies.get('id') && cookies.get('hash');
   const [mainPageOpened, setMainPageOpened] = useState(nameExists);
 
   useEffect(() => {

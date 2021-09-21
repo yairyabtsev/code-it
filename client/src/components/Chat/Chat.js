@@ -6,19 +6,9 @@ import {cookies} from "../../App";
 import './Chat.css';
 
 const Chat = () => {
-  const [yourID, setYourID] = useState(100);
-  const [messages, setMessages] = useState([
-    { id: 100, body: 'Hello!' },
-    { id: 101, body: '', name: 'Yarr' },
-    { id: 101, body: 'Эй', name: 'Yarr' },
-    { id: 101, body: '...', name: 'Yarr' },
-    { id: 101, body: 'Ку ку ку ку ку', name: 'Yarr' },    
-    { id: 100, body: 'mm rqwl ehewoih rqm' },
-    { id: 101, body: 'mmm reh erij eqw;ner qpew n', name: 'Booka' },
-    { id: 101, body: 'mmmmfads nlwe n new ne nq ewnqeo ', name: 'Kekovich' },
-    { id: 101, body: 'mmmf fldsnf ln f nn fn wenr qlwenwe nfl nenrupq ', name: 'Lololo' },
-    { id: 100, body: 'fsdhaklhfjdlsfhlisdafhnlsdkvnifld fnldashfoiuwel' },
-  ]);
+  const yourID = cookies.get('id');
+  const thisHash = cookies.get('hash');
+  const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
 
   const socketRef = useRef();
@@ -26,13 +16,7 @@ const Chat = () => {
   useEffect(() => {
     socketRef.current = io.connect('/');
 
-    socketRef.current.on("your id", id => {
-      console.log("106");
-      setYourID(id);
-    })
-
-    socketRef.current.on("message", (message) => {
-      console.log("111");
+    socketRef.current.on("message"+thisHash, (message) => {
       receiveMessage(message);
     })
   }, []);
@@ -45,19 +29,18 @@ const Chat = () => {
   }
 
   function sendMessage(e) {
-    console.log("122");
     e.preventDefault();
     const messageObject = {
       body: message,
       id: yourID,
       name: cookies.get("name"),
+      hash: thisHash,
     };
     setMessage("");
     socketRef.current.emit("send message", messageObject);
   }
 
   function handleChange(e) {
-    console.log("133");
     setMessage(e.target.value);
   }
 
@@ -91,7 +74,7 @@ export default Chat;
 
 function isNameShown(messages, i) {
   let j = i - 1;
-  
+
   while (j >= 0 && !messages[j].body) {
     j--;
   }
