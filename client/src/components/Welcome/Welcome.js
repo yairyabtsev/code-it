@@ -55,7 +55,6 @@ const Welcome = () => {
     const userObject = {
       id: cookies.get("id"),
       name: cookies.get("name"),
-      score: 0,
     };
     socketRef.current.emit("add user", userObject);
   }
@@ -86,6 +85,9 @@ const Welcome = () => {
           </form>
         </div>
       </header>
+      {
+        // TODO: footer: we use cookies, please accept it.
+      }
     </div>
   );
 };

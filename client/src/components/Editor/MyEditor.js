@@ -135,10 +135,6 @@ class MyEditor extends React.Component {
             <span className="MyEditor__UploadButtonText">Upload your file</span>
             <img src={uploadIcon} alt="upload" />
           </label>
-
-            {
-              // TODO: "we need to inform the user that the code will be stored on our server and ask if he is against it."
-            }
             <div className="MyEditor__ButtonsGroup">
               <Button>Random</Button>
               <Button onClick={this.runCode}>Run</Button>
