@@ -6,7 +6,7 @@ const socket = require("socket.io");
 const io = socket(server);
 const mongo = require('mongodb');
 const MongoClient = mongo.MongoClient;
-const ObjectID = mongo.ObjectID;
+// const ObjectID = mongo.ObjectID;
 
 const url = 'mongodb://localhost:27017';
 
@@ -29,57 +29,97 @@ async function addUser(body) {
 }
 
 async function updateLocation(delta) {
+  let loc = delta;
   const mongoClient = new MongoClient(url, {useNewUrlParser: true, useUnifiedTopology: true});
   try {
     await mongoClient.connect();
     const db = mongoClient.db("codeitdb");
     const collection = db.collection("location");
-    //...
-    console.log(results);
+    const result = await collection.findOneAndUpdate(
+      {u_id: delta.u_id}, {$inc: {x: delta.x, y: delta.y, division: delta.division}},
+      {new: true});
+    loc = result.value;//error!
+    console.log("42");
+    console.log(loc);
   } catch (err) {
     console.log(err);
     return false;
   } finally {
     await mongoClient.close();
   }
-  return true;
+  return loc;
 }
+
 
 async function findRoom(u_id, hash) {
   const mongoClient = new MongoClient(url, {useNewUrlParser: true, useUnifiedTopology: true});
+  let delta = {x: 0.0, y: 0.0, division: Math.random() * 100, u_id: u_id}
   try {
     await mongoClient.connect();
     const db = mongoClient.db("codeitdb");
     const collection = db.collection("rooms");
-    const results = await collection.findOneAndUpdate(
-      {capacity: {$lt: 5}}, {$inc: {capacity: 1}, $push: {players: u_id}}, {new: true});
-    if (!results.value) {
-      let room = {hash: hash, capacity: 1, players: [u_id]};
-      const result = await db.collection("rooms").insertOne(room);
+    const result = await collection.findOneAndUpdate(
+      {capacity: {$lt: 4}}, {$inc: {capacity: 1}, $push: {players: u_id}}, {new: true});
+    let room = result.value;
+    if (!room) {
+      room = {hash: hash, capacity: 1, players: [u_id]};
+      await db.collection("rooms").insertOne(room);
     } else {
-      hash = results.value.hash;
+      hash = result.value.hash;
     }
-    // TODO: updateLocation
+    let quarters = [false, false, false, false];
+    const users = db.collection("location");
+    for (let i = 0; i < room.capacity - 1; i++) {
+      const result = await users.find({u_id: room.players[i]}).toArray();//error!
+      if (result) {
+        if (result.x < 50) {
+          if (result.y < 50)
+            quarters[0] = true;
+          else
+            quarters[2] = true;
+        } else {
+          if (result.y < 50)
+            quarters[1] = true;
+          else
+            quarters[3] = true;
+        }
+      }
+    }
+    delta.x += Math.random() * 25 + 12.5;
+    delta.y += Math.random() * 25 + 12.5;
+    if (!quarters[1]) delta.x += 50;
+    else if (!quarters[2]) delta.y += 50;
+    else if (!quarters[3]) {
+      delta.x += 50;
+      delta.y += 50;
+    }
+    console.log("96");
+    console.log(delta);
   } catch (err) {
     console.log(err);
     return false;
   } finally {
     await mongoClient.close();
   }
-  return hash;
+  return {hash: hash, delta: delta};
 }
 
 io.on("connection", socket => {
   const {id} = socket.client;
-  // console.log(`User connected: ${id}`);
   socket.emit("your id", socket.id);
   socket.on("add user", body => {
-    // console.log(`${id}: ${body.name} - ${body.id}`);
     addUser(body);
-    findRoom(body.id, id).then(hash => io.emit("hash of session", hash));
+    findRoom(body.id, id).then(ans => {
+      io.emit("hash of session", ans.hash);
+      console.log("114");
+      console.log(ans.delta);
+      updateLocation(ans.delta).then(loc => {
+        console.log("117");
+        console.log(loc);
+      });
+    });
   })
   socket.on("send message", body => {
-    // console.log(`${id}: ${body.name} - ${body.id} - ${body.body} #${body.hash}`);
     io.emit("message" + body.hash, body)
 
   })
