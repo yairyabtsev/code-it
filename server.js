@@ -39,8 +39,6 @@ async function updateLocation(delta) {
       {u_id: delta.u_id}, {$inc: {x: delta.x, y: delta.y, division: delta.division}},
       {returnOriginal: false});
     loc = result.value;//old data
-    console.log("42");
-    console.log(loc);
   } catch (err) {
     console.log(err);
     return false;
@@ -72,15 +70,11 @@ async function findRoom(u_id, hash) {
     } else {
       hash = result.value.hash;
     }
-    console.log("room_75");
-    console.log(room);
     let quarters = [false, false, false, false];
     const users = db.collection("location");
     for (let i = 0; i < room.capacity - 1; i++) {
       const result = await users.find({u_id: room.players[i]}).toArray();
       if (result) {
-        console.log("find_82");
-        console.log(result[0]);
         if (result[0].x < 50) {
           if (result[0].y < 50)
             quarters[0] = true;
@@ -100,8 +94,6 @@ async function findRoom(u_id, hash) {
       delta.x += 50;
       delta.y += 50;
     }
-    console.log("103");
-    console.log(delta);
   } catch (err) {
     console.log(err);
     return false;
@@ -118,10 +110,7 @@ io.on("connection", socket => {
     addUser(body);
     findRoom(body.id, id).then(ans => {
       io.emit("hash of session", ans.hash);
-      console.log("121");
-      console.log(ans.delta);
       updateLocation(ans.delta).then(loc => {
-        console.log("124");
         console.log(loc);
       });
     });
