@@ -10,6 +10,7 @@ import './MyEditor.css';
 import {Compiler} from "./Compiler/Compiler"
 import uploadIcon from '../../assets/upload.svg';
 import {cookies} from "../../App";
+import io from "socket.io-client";
 
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -21,12 +22,13 @@ class MyEditor extends React.Component {
     super(props);
 
     this.codeRef = React.createRef();
+    this.socketRef = React.createRef();
+    this.socketRef.current = io.connect('/'); // TODO :??
 
     this.state = {
       editorLanguage: 'c',
       code: localStorage.getItem('./Compiler/antlr/Examples/test.1c') ?? DEFAULT_CODE,
       toastOpen: false,
-      socketRef: useRef,
       id: cookies.get('id'),
     }
 
@@ -48,7 +50,7 @@ class MyEditor extends React.Component {
   }
 
   runCode() {
-    this.socketRef().current.emit("reset score", this.id);
+    this.socketRef.current.emit("reset score", this.id);
     const code = this.state.code;
     Compiler(code);
   }
@@ -81,11 +83,10 @@ class MyEditor extends React.Component {
   }
 
   handleDelete() {
-    const clear = window.confirm('Are you sure you want to delete all of your code?');
+    const clear = window.confirm('Are you sure you want to delete this code from local storage?');
 
     if (clear) {
-      this.codeRef.current = '';
-      this.setState({code: ''});
+
     }
   }
 
