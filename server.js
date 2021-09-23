@@ -17,7 +17,7 @@ async function addUser(body) {
     const db = mongoClient.db("codeitdb");
     let user = {name: body.name, u_id: body.id, score: 0, code: null};
     await db.collection("users").insertOne(user);
-    let location = {x: 0.0, y: 0.0, division: 0.0, u_id: user.u_id};
+    let location = {x: 0.0, y: 0.0, division: 0.0, u_id: user.u_id, hash: null, type: 1};
     await db.collection("location").insertOne(location);
   } catch (err) {
     console.log(err);
@@ -28,15 +28,18 @@ async function addUser(body) {
   return true;
 }
 
-async function updateLocation(delta) {
-  let loc = delta;
+async function updateLocation(data) {
+  let loc = data.delta;
   const mongoClient = new MongoClient(url, {useNewUrlParser: true, useUnifiedTopology: true});
   try {
     await mongoClient.connect();
     const db = mongoClient.db("codeitdb");
     const collection = db.collection("location");
     const result = await collection.findOneAndUpdate(
-      {u_id: delta.u_id}, {$inc: {x: delta.x, y: delta.y, division: delta.division}},
+      {u_id: data.delta.u_id}, {
+        $inc: {x: data.delta.x, y: data.delta.y, division: data.delta.division},
+        hash: data.hash
+      },
       {returnDocument: "after"});
     loc = result.value;
   } catch (err) {
@@ -103,18 +106,36 @@ async function findRoom(u_id, hash) {
   return {hash: hash, delta: delta};
 }
 
+async function getLocation(hash) {
+  let loc = {ships: [], bullets: []};
+  const mongoClient = new MongoClient(url, {useNewUrlParser: true, useUnifiedTopology: true});
+  try {
+    await mongoClient.connect();
+    const db = mongoClient.db("codeitdb");
+    const collection = db.collection("location");
+    loc.ships = await collection.find({hash: hash, type: 1}).toArray();
+    loc.bullets = await collection.find({hash: hash, type: 0}).toArray();
+  } catch (err) {
+    console.log(err);
+    return false;
+  } finally {
+    await mongoClient.close();
+  }
+  return loc;
+}
+
 io.on("connection", socket => {
   const {id} = socket.client;
   socket.emit("your id", socket.id);
   socket.on("add user", body => {
     addUser(body);
-    findRoom(body.id, id).then(ans => {
+    findRoom(body.id, id).then(obj => {
       io.emit("hash of session", ans.hash);
-      updateLocation(ans.delta);
+      updateLocation(obj);
     });
   });
   socket.on("get location", body => {
-    io.emit("message" + body.hash, body)
+    getLocation(body.hash).then(loc => io.emit("location" + body.hash, loc));
   });
   socket.on("send message", body => {
     io.emit("message" + body.hash, body)

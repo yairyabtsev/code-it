@@ -22,7 +22,7 @@ const Chat = () => {
   }, []);
 
   function receiveMessage(message) {
-    console.log(message.id)
+    // console.log(message.id)
     setMessages(oldMsgs => [...oldMsgs, message]);
   }
 

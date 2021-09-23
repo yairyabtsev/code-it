@@ -4,22 +4,36 @@ import {Stage, Layer, Rect, Text, Circle, Line, Shape} from 'react-konva';
 import './Canvas.css';
 import {useContainerDimensions} from "../miscellaneous/useContainerDimensions";
 import {cookies} from "../../App";
+import io from "socket.io-client";
+
 
 const Canvas = () => {
   const ref = useRef(null);
   const id = cookies.get('id');
+  const hash = cookies.get('hash');
   const {width, height} = useContainerDimensions(ref);
   const [ships, setShips] = React.useState([
-    {x: 50, y: 50, division: Math.random() * 100, id: id},
-    {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
-    {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
-    {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},]);
+    // {x: 50, y: 50, division: Math.random() * 100, id: id},
+    // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
+    // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
+    // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
+  ]);
   const [bullets, setBullets] = React.useState([
-    {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: id},
-    {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
-    {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
-    {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},]);
+    // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: id},
+    // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
+    // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
+    // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
+  ]);
   const div = 3.5;
+  const socketRef = useRef();
+  useEffect(() => {
+    socketRef.current = io.connect('/');
+
+    socketRef.current.on("location" + hash, (location) => {
+      setShips(location.ships);
+      setBullets(location.bullets);
+    })
+  }, []);
 
   return (
     <div className="Canvas" ref={ref}>
