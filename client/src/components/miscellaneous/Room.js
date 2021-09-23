@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {Redirect} from 'react-router';
 import {cookies} from '../../App'
 import Chat, {Page} from "../Chat/Chat";
@@ -9,30 +9,29 @@ import MyEditor from "../Editor/MyEditor";
 import './Page.css';
 
 const Room = () => {
-  const nameExists = cookies.get('name') && cookies.get('id') && cookies.get('hash');
-  const [mainPageOpened, setMainPageOpened] = useState(nameExists);
+  const [mainPageOpened, setMainPageOpened] = useState(
+    cookies.get('name') && cookies.get('id') && cookies.get('hash') && true);
 
   useEffect(() => {
-    console.log(mainPageOpened);
     if (!mainPageOpened) {
       window.confirm('You need to choose a name. Redirecting to the Welcome page...');
       setMainPageOpened(true);
     }
   }, [mainPageOpened]);
 
-  return mainPageOpened && (
-    !nameExists ? (
+  return (
+    (!mainPageOpened) ? (
       <Redirect push to="/"/>
-    ): (
+    ) : (
       <Page className="Page">
         <div className="Page__InteractiveElements">
           <div className="Page__Visual">
-            <Canvas />
-            <MyEditor />
+            <Canvas/>
+            <MyEditor/>
           </div>
           <div className="Page__Functional">
-            <Score />
-            <Chat />
+            <Score/>
+            <Chat/>
           </div>
         </div>
       </Page>

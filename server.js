@@ -15,7 +15,7 @@ async function addUser(body) {
   try {
     await mongoClient.connect();
     const db = mongoClient.db("codeitdb");
-    let user = {name: body.name, u_id: body.id, score: 0, code: null};
+    let user = {name: body.name, u_id: body.id, score: 0, code: null, injuries: 0};
     await db.collection("users").insertOne(user);
     let location = {x: 0.0, y: 0.0, division: 0.0, u_id: user.u_id, hash: null, type: 1};
     await db.collection("location").insertOne(location);
@@ -124,9 +124,15 @@ async function getLocation(hash) {
   return loc;
 }
 
+function resetScore(u_id) {
+
+}
+
 io.on("connection", socket => {
   const {id} = socket.client;
   socket.emit("your id", socket.id);
+  socket.on("reset score", u_id => resetScore(u_id)
+    .then(io.emit("score"+u_id, {score: 0, injuries: 0})));
   socket.on("add user", body => {
     addUser(body);
     findRoom(body.id, id).then(obj => {

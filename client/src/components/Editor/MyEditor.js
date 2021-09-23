@@ -1,5 +1,5 @@
 import {Page} from "../Chat/Chat";
-import React from "react";
+import React, {useRef} from "react";
 import MonacoEditor from '@monaco-editor/react';
 import {Button} from "../Welcome/Welcome"
 
@@ -9,6 +9,7 @@ import MuiAlert from '@mui/material/Alert';
 import './MyEditor.css';
 import {Compiler} from "./Compiler/Compiler"
 import uploadIcon from '../../assets/upload.svg';
+import {cookies} from "../../App";
 
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -25,6 +26,8 @@ class MyEditor extends React.Component {
       editorLanguage: 'c',
       code: localStorage.getItem('./Compiler/antlr/Examples/test.1c') ?? DEFAULT_CODE,
       toastOpen: false,
+      socketRef: useRef,
+      id: cookies.get('id'),
     }
 
     this.onChange = this.onChange.bind(this);
@@ -45,6 +48,7 @@ class MyEditor extends React.Component {
   }
 
   runCode() {
+    this.socketRef().current.emit("reset score", this.id);
     const code = this.state.code;
     Compiler(code);
   }
@@ -59,7 +63,7 @@ class MyEditor extends React.Component {
       const result = String(reader.result);
 
       this.codeRef.current = result;
-      this.setState({ code: result });
+      this.setState({code: result});
     };
 
     reader.onerror = () => {
@@ -81,17 +85,17 @@ class MyEditor extends React.Component {
 
     if (clear) {
       this.codeRef.current = '';
-      this.setState({ code: '' });
+      this.setState({code: ''});
     }
   }
 
   handleSave() {
     localStorage.setItem('savedCode', this.codeRef.current);
-    this.setState({ toastOpen: true });
+    this.setState({toastOpen: true});
   }
 
   changeEditorLanguage = type => {
-    this.setState({ editorLanguage: type });
+    this.setState({editorLanguage: type});
     console.log(type);
   }
 
@@ -100,7 +104,7 @@ class MyEditor extends React.Component {
       return;
     }
 
-    this.setState({ toastOpen: false });
+    this.setState({toastOpen: false});
   };
 
   render() {
@@ -127,15 +131,15 @@ class MyEditor extends React.Component {
             />
           </div>
           <div className="MyEditor__ButtonsContainer">
-          <label className="MyEditor__UploadButton">
-            <input
-              type="file"
-              name="myFile"
-              onChange={this.uploadFile}
-            />
-            <span className="MyEditor__UploadButtonText">Upload your file</span>
-            <img src={uploadIcon} alt="upload" />
-          </label>
+            <label className="MyEditor__UploadButton">
+              <input
+                type="file"
+                name="myFile"
+                onChange={this.uploadFile}
+              />
+              <span className="MyEditor__UploadButtonText">Upload your file</span>
+              <img src={uploadIcon} alt="upload"/>
+            </label>
             <div className="MyEditor__ButtonsGroup">
               <Button>Random</Button>
               <Button onClick={this.runCode}>Run</Button>
@@ -149,9 +153,9 @@ class MyEditor extends React.Component {
           open={this.state.toastOpen}
           onClose={this.handleToastClose}
           autoHideDuration={3000}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          anchorOrigin={{vertical: 'top', horizontal: 'center'}}
         >
-          <Alert onClose={this.handleToastClose} severity="success" sx={{ width: '100%' }}>
+          <Alert onClose={this.handleToastClose} severity="success" sx={{width: '100%'}}>
             Your code has successfully been saved to local storage!
           </Alert>
         </Snackbar>
