@@ -37,7 +37,7 @@ async function updateLocation(delta) {
     const collection = db.collection("location");
     const result = await collection.findOneAndUpdate(
       {u_id: delta.u_id}, {$inc: {x: delta.x, y: delta.y, division: delta.division}},
-      {returnOriginal: false});
+      {returnDocument: "after"});
     loc = result.value;//old data
   } catch (err) {
     console.log(err);
@@ -62,7 +62,7 @@ async function findRoom(u_id, hash) {
     const db = mongoClient.db("codeitdb");
     const collection = db.collection("rooms");
     const result = await collection.findOneAndUpdate(
-      {capacity: {$lt: 4}}, {$inc: {capacity: 1}, $push: {players: u_id}}, {returnOriginal: false});
+      {capacity: {$lt: 4}}, {$inc: {capacity: 1}, $push: {players: u_id}}, {returnDocument: "after"});
     let room = result.value;//old data
     if (!room) {
       room = {hash: hash, capacity: 1, players: [u_id]};
