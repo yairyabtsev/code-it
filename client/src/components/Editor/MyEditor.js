@@ -10,6 +10,7 @@ import './MyEditor.css';
 import {Compiler} from "./Compiler/Compiler"
 import uploadIcon from '../../assets/upload.svg';
 
+
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -189,7 +190,7 @@ void turn_rad(float angle) {
   turn(angle * 360 / 2*Pi);
 }
 
-int count_enemys(); // not a const
+int count_enemies(); // not a const
 
 //
 // ....

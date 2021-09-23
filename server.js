@@ -38,7 +38,7 @@ async function updateLocation(delta) {
     const result = await collection.findOneAndUpdate(
       {u_id: delta.u_id}, {$inc: {x: delta.x, y: delta.y, division: delta.division}},
       {returnDocument: "after"});
-    loc = result.value;//old data
+    loc = result.value;
   } catch (err) {
     console.log(err);
     return false;
@@ -63,7 +63,7 @@ async function findRoom(u_id, hash) {
     const collection = db.collection("rooms");
     const result = await collection.findOneAndUpdate(
       {capacity: {$lt: 4}}, {$inc: {capacity: 1}, $push: {players: u_id}}, {returnDocument: "after"});
-    let room = result.value;//old data
+    let room = result.value;
     if (!room) {
       room = {hash: hash, capacity: 1, players: [u_id]};
       await db.collection("rooms").insertOne(room);
@@ -110,16 +110,16 @@ io.on("connection", socket => {
     addUser(body);
     findRoom(body.id, id).then(ans => {
       io.emit("hash of session", ans.hash);
-      updateLocation(ans.delta).then(loc => {
-        console.log(loc);
-      });
+      updateLocation(ans.delta);
     });
-  })
+  });
+  socket.on("get location", body => {
+    io.emit("message" + body.hash, body)
+  });
   socket.on("send message", body => {
     io.emit("message" + body.hash, body)
-
-  })
-})
+  });
+});
 
 const port = 8000;
 server.listen(port, () => console.log("server is running on port " + port));
