@@ -136,7 +136,7 @@ io.on("connection", socket => {
   socket.on("add user", body => {
     addUser(body);
     findRoom(body.id, id).then(obj => {
-      io.emit("hash of session", ans.hash);
+      io.emit("hash of session", obj.hash);
       updateLocation(obj);
     });
   });

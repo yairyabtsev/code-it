@@ -19,7 +19,7 @@ seq   : Int | Float | Bool | NAME | NAME '[' seq ']' | '{' seq (',' seq)* '}'
 
 
 Int : ('-'|'+')? DIGIT+;
-Float : Int ('.' | ',') DIGIT+;
+Float : Int '.' DIGIT+;
 Bool : ('true' | 'false');
 
 command : ((seq | var_decl | init | jmp | exit) ';') | cond | loop;
