@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from "react";
+import React, {Component} from "react";
 import MUI_Button from '@material-ui/core/Button';
 import {withStyles} from '@material-ui/styles';
 import {Redirect} from 'react-router';
@@ -23,73 +23,97 @@ export const Button = withStyles({
   },
 })(MUI_Button);
 
-const Welcome = () => {
-  const [name, setName] = useState();
-  const [loggedIn, LogIn] = useState(false);
+const WelcomeButton = withStyles({
+  root: {
+    backgroundColor: '#FFE184',
+    color: '#282C34',
+    '&:hover': {
+      backgroundColor: '#FF9666',
+    },
+  },
+})(MUI_Button);
 
-  const socketRef = useRef();
+export default class Welcome extends Component {
+  socket;
 
-  useEffect(() => {
-    socketRef.current = io.connect('/');
+  constructor(props) {
+    super(props);
 
-    socketRef.current.on("your id", id => {
-      if (!cookies.get('id'))
-        cookies.set('id', id, {path: '/'});
-    })
-
-    socketRef.current.on("hash of session", hash => {
-      if (!cookies.get('hash'))
-        cookies.set('hash', hash, {path: '/'});
-      LogIn(true);
-    })
-  }, []);
-
-  function handleChange(e) {
-    setName(e.target.value);
+    this.state = {
+      value: '',
+      inputError: false,
+      loggedIn: false,
+    };
   }
 
-  function handleSubmit(e) {
+  componentDidMount() {
+    this.socket = io.connect('/');
+    this.socket.on("hash of session", hash => {
+      if (!cookies.get('hash')) {
+        cookies.set('hash', hash, {path: '/'});
+      }
+      this.setState({ loggedIn: true });
+    })
+  }
+
+  handleChange(event) {
+    this.setState({ value: event.target.value});
+  }
+
+  handleSubmit(e) {
     e.preventDefault();
 
-    cookies.set('name', name, {path: '/'});
+    const { value } = this.state;
+    if (value.length < 3) {
+      this.setState({ inputError: true });
+      return;
+    }
+
+    cookies.set('id', 111);
+    cookies.set('name', this.state.value, {path: '/'});
     const userObject = {
       id: cookies.get("id"),
       name: cookies.get("name"),
     };
-    socketRef.current.emit("add user", userObject);
+    this.setState({ loggedIn: true });
+    this.socket.emit("add user", userObject);
   }
 
-
-  return loggedIn ? <Redirect push to="/game"/> : (
-    <div className="Welcome">
-      <div className="Welcome__Logo">
-        <img src={logo} alt="Code-it logo" onClick={() => window.location.reload()}/>
-      </div>
-      <header className="Welcome-header">
-        <p>
-          <b>&lsquo;Code <code>it</code>!&rsquo;</b> is a multiplayer web game in<br/>
-          which you can challenge other people to<br/> find out whose code is <i>stronger</i>.
-        </p>
-        <div className="Welcome-form">
-          <form onSubmit={handleSubmit} autoComplete="off">
-            <input
-              name="user-name"
-              required
-              autoFocus
-              maxLength={32}
-              placeholder="Name"
-              value={name}
-              onChange={handleChange}
-            /><br/>
-            <Button type="submit">Play!</Button>
-          </form>
+  render() {
+    return this.state.loggedIn ? <Redirect to="/game" /> : (
+      <div className="Welcome">
+        <div className="Welcome__Logo">
+          <img src={logo} alt="Code-it logo" onClick={() => window.location.reload()} />
         </div>
-      </header>
-      {
-        // TODO: footer: we use cookies, please accept it.
-      }
-    </div>
-  );
-};
-
-export default Welcome;
+        <header className="Welcome-header">
+          <p>
+            <b>&lsquo;Code <code>it</code>!&rsquo;</b> is a multiplayer web game in<br/>
+            which you can challenge other people to<br/> find out whose code is <i>stronger</i>.
+          </p>
+          <div className="WelcomeForm">
+            <form onSubmit={this.handleSubmit.bind(this)} autoComplete="off">
+              <div className="PapaInput">
+                <input
+                  className={this.state.inputError ? 'errorInput' : ''}
+                  name="user-name"
+                  aria-label="user name"
+                  required
+                  autoFocus
+                  maxLength={32}
+                  placeholder='Your name'
+                  value={this.state.value}
+                  onChange={this.handleChange.bind(this)}
+                  onFocus={() => this.setState({ inputError: false })}
+                />
+                <span className={`ErrorMessage ${!this.state.inputError ? 'hidden' : ''}`}>
+                  Your name must be at least 3 characters long
+                </span>
+              </div>
+              <WelcomeButton type="submit">Play!</WelcomeButton>
+            </form>
+          </div>
+        </header>
+      </div>
+    );
+  }
+}

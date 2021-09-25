@@ -1,6 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {render} from 'react-dom';
-import {Stage, Layer, Rect, Text, Circle, Line, Shape} from 'react-konva';
+import React, {useEffect, useRef} from 'react';
+import {Stage, Layer, Circle, Shape} from 'react-konva';
 import './Canvas.css';
 import {useContainerDimensions} from "../miscellaneous/useContainerDimensions";
 import {cookies} from "../../App";
@@ -33,7 +32,7 @@ const Canvas = () => {
       setShips(location.ships);
       setBullets(location.bullets);
     })
-  }, []);
+  }, [hash]);
 
   return (
     <div className="Canvas" ref={ref}>

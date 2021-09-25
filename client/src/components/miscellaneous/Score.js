@@ -18,7 +18,7 @@ const Score = () => {
       setScore(data.score);
       setInjuries(data.injuries);
     })
-  }, []);
+  }, [id]);
 
   return (
     <div className="Score">

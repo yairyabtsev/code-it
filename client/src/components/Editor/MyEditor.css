@@ -1,18 +1,18 @@
 .MyEditor {
   width: calc(100vw - 400px) !important;
-  height: auto !important;
+  height: 100% !important;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
 }
 
-.MyEditor>section {
+.MyEditor section {
   overflow: hidden;
 }
 
 .MyEditor__MonacoEditor {
   width: 100%;
-  height: 250px;
+  height: calc(100% - 56px);
   border: 1px solid #F8F6F5;
   overflow: hidden;
 }
@@ -40,10 +40,12 @@
 
 .MyEditor__ButtonsContainer {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   width: 100%;
+  height: 56px;
   background-color: #35364E;
-  padding: 8px;
+  padding: 0 8px;
 }
 
 .MyEditor__ButtonsGroup>button {
