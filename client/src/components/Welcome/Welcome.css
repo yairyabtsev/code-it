@@ -70,6 +70,10 @@
   border-color: red;
 }
 
+.Welcome input.errorInput::placeholder {
+  color: red;
+}
+
 .Welcome .ErrorMessage {
   font-size: 0.8rem;
   color: red;

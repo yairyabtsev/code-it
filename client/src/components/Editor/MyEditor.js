@@ -11,9 +11,6 @@ import {Compiler} from "./Compiler/Compiler"
 import uploadIcon from '../../assets/upload.svg';
 import {cookies} from "../../App";
 import io from "socket.io-client";
-import { ResizableBox } from 'react-resizable';
-
-import '../../../node_modules/react-resizable/css/styles.css';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -111,11 +108,6 @@ class MyEditor extends React.Component {
     this.setState({toastOpen: false});
   };
 
-  onResize = (event, {element, size, handle}) => {
-    this.setState({height: size.height});
-    console.log('resize!');
-  };
-
   render() {
     console.log('render');
     const code = this.state.code;
@@ -126,47 +118,39 @@ class MyEditor extends React.Component {
 
     return (
       <>
-        <ResizableBox
-          height={250}
-          minConstraints={[0, 250]}
-          maxConstraints={[1000, 400]}
-          resizeHandles={['n']}
-          axis='y'
-        >
-          <Page className="MyEditor">
-            <div className="MyEditor__MonacoEditor">
-              <div className="MyEditor__MonacoEditorTabs">
-                <span onClick={() => this.changeEditorLanguage('c')}>mini-C</span>
-              </div>
-              <MonacoEditor
-                theme="vs-dark"
-                defaultLanguage={this.state.editorLanguage}
-                value={code}
-                options={options}
-                onChange={this.onChange}
-                editorDidMount={this.editorDidMount}
+        <Page className="MyEditor">
+          <div className="MyEditor__MonacoEditor">
+            <div className="MyEditor__MonacoEditorTabs">
+              <span onClick={() => this.changeEditorLanguage('c')}>mini-C</span>
+            </div>
+            <MonacoEditor
+              theme="vs-dark"
+              defaultLanguage={this.state.editorLanguage}
+              value={code}
+              options={options}
+              onChange={this.onChange}
+              editorDidMount={this.editorDidMount}
+            />
+          </div>
+          <div className="MyEditor__ButtonsContainer">
+            <label className="MyEditor__UploadButton">
+              <input
+                type="file"
+                name="myFile"
+                onChange={this.uploadFile}
               />
+              <span className="MyEditor__UploadButtonText">Upload your file</span>
+              <img src={uploadIcon} alt="upload"/>
+            </label>
+            <div className="MyEditor__ButtonsGroup">
+              <Button>Random</Button>
+              <Button onClick={this.runCode}>Run</Button>
+              <Button onClick={this.downloadContent}>Download</Button>
+              <Button onClick={this.handleSave}>Save</Button>
+              <Button onClick={this.handleDelete}>Delete</Button>
             </div>
-            <div className="MyEditor__ButtonsContainer">
-              <label className="MyEditor__UploadButton">
-                <input
-                  type="file"
-                  name="myFile"
-                  onChange={this.uploadFile}
-                />
-                <span className="MyEditor__UploadButtonText">Upload your file</span>
-                <img src={uploadIcon} alt="upload"/>
-              </label>
-              <div className="MyEditor__ButtonsGroup">
-                <Button>Random</Button>
-                <Button onClick={this.runCode}>Run</Button>
-                <Button onClick={this.downloadContent}>Download</Button>
-                <Button onClick={this.handleSave}>Save</Button>
-                <Button onClick={this.handleDelete}>Delete</Button>
-              </div>
-            </div>
-          </Page>
-        </ResizableBox>
+          </div>
+        </Page>
         <Snackbar
           open={this.state.toastOpen}
           onClose={this.handleToastClose}
