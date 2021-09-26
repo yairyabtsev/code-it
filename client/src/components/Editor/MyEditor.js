@@ -1,5 +1,5 @@
 import {Page} from "../Chat/Chat";
-import React, {useRef} from "react";
+import React from "react";
 import MonacoEditor from '@monaco-editor/react';
 import {Button} from "../Welcome/Welcome"
 
@@ -11,7 +11,9 @@ import {Compiler} from "./Compiler/Compiler"
 import uploadIcon from '../../assets/upload.svg';
 import {cookies} from "../../App";
 import io from "socket.io-client";
+import { ResizableBox } from 'react-resizable';
 
+import '../../../node_modules/react-resizable/css/styles.css';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -21,7 +23,6 @@ class MyEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    this.codeRef = React.createRef();
     this.socketRef = React.createRef();
     this.socketRef.current = io.connect('/'); // TODO :??
 
@@ -30,7 +31,9 @@ class MyEditor extends React.Component {
       code: localStorage.getItem('./Compiler/antlr/Examples/test.1c') ?? DEFAULT_CODE,
       toastOpen: false,
       id: cookies.get('id'),
-    }
+      width: window.innerWidth - 400,
+      height: 250,
+    };
 
     this.onChange = this.onChange.bind(this);
     this.runCode = this.runCode.bind(this);
@@ -46,13 +49,13 @@ class MyEditor extends React.Component {
   }
 
   onChange(newValue, e) {
-    this.codeRef.current = newValue;
+    this.setState({ code: newValue });
   }
 
   runCode() {
     this.socketRef.current.emit("reset score", this.id);
-    const code = this.state.code;
-    Compiler(code);
+    this.handleSave();
+    Compiler(this.state.code);
   }
 
   uploadFile(event) {
@@ -64,8 +67,7 @@ class MyEditor extends React.Component {
     reader.onload = () => {
       const result = String(reader.result);
 
-      this.codeRef.current = result;
-      this.setState({code: result});
+      this.setState({ code: result });
     };
 
     reader.onerror = () => {
@@ -86,13 +88,14 @@ class MyEditor extends React.Component {
     const clear = window.confirm('Are you sure you want to delete this code from local storage?');
 
     if (clear) {
-
+      localStorage.removeItem('savedCode');
+      this.setState({ code: '', toastOpen: true });
     }
   }
 
   handleSave() {
-    localStorage.setItem('savedCode', this.codeRef.current);
-    this.setState({toastOpen: true});
+    localStorage.setItem('savedCode', this.state.code);
+    this.setState({ toastOpen: true });
   }
 
   changeEditorLanguage = type => {
@@ -108,48 +111,62 @@ class MyEditor extends React.Component {
     this.setState({toastOpen: false});
   };
 
+  onResize = (event, {element, size, handle}) => {
+    this.setState({height: size.height});
+    console.log('resize!');
+  };
+
   render() {
+    console.log('render');
     const code = this.state.code;
+
     const options = {
       selectOnLineNumbers: true
     };
+
     return (
       <>
-        <Page className="MyEditor">
-          <div
-            className="MyEditor__MonacoEditor"
-          >
-            <div className="MyEditor__MonacoEditorTabs">
-              <span onClick={() => this.changeEditorLanguage('c')}>mini-C</span>
-            </div>
-            <MonacoEditor
-              theme="vs-dark"
-              defaultLanguage={this.state.editorLanguage}
-              value={code}
-              options={options}
-              onChange={this.onChange}
-              editorDidMount={this.editorDidMount}
-            />
-          </div>
-          <div className="MyEditor__ButtonsContainer">
-            <label className="MyEditor__UploadButton">
-              <input
-                type="file"
-                name="myFile"
-                onChange={this.uploadFile}
+        <ResizableBox
+          height={250}
+          minConstraints={[0, 250]}
+          maxConstraints={[1000, 400]}
+          resizeHandles={['n']}
+          axis='y'
+        >
+          <Page className="MyEditor">
+            <div className="MyEditor__MonacoEditor">
+              <div className="MyEditor__MonacoEditorTabs">
+                <span onClick={() => this.changeEditorLanguage('c')}>mini-C</span>
+              </div>
+              <MonacoEditor
+                theme="vs-dark"
+                defaultLanguage={this.state.editorLanguage}
+                value={code}
+                options={options}
+                onChange={this.onChange}
+                editorDidMount={this.editorDidMount}
               />
-              <span className="MyEditor__UploadButtonText">Upload your file</span>
-              <img src={uploadIcon} alt="upload"/>
-            </label>
-            <div className="MyEditor__ButtonsGroup">
-              <Button>Random</Button>
-              <Button onClick={this.runCode}>Run</Button>
-              <Button onClick={this.downloadContent}>Download</Button>
-              <Button onClick={this.handleSave}>Save</Button>
-              <Button onClick={this.handleDelete}>Delete</Button>
             </div>
-          </div>
-        </Page>
+            <div className="MyEditor__ButtonsContainer">
+              <label className="MyEditor__UploadButton">
+                <input
+                  type="file"
+                  name="myFile"
+                  onChange={this.uploadFile}
+                />
+                <span className="MyEditor__UploadButtonText">Upload your file</span>
+                <img src={uploadIcon} alt="upload"/>
+              </label>
+              <div className="MyEditor__ButtonsGroup">
+                <Button>Random</Button>
+                <Button onClick={this.runCode}>Run</Button>
+                <Button onClick={this.downloadContent}>Download</Button>
+                <Button onClick={this.handleSave}>Save</Button>
+                <Button onClick={this.handleDelete}>Delete</Button>
+              </div>
+            </div>
+          </Page>
+        </ResizableBox>
         <Snackbar
           open={this.state.toastOpen}
           onClose={this.handleToastClose}
@@ -190,6 +207,7 @@ void turn(float angle);
 void turn_percent(float angle) {
   turn(angle * 3,6);
 }
+
 void turn_rad(float angle) {
   angle %= 2*Pi;
   turn(angle * 360 / 2*Pi);
@@ -201,11 +219,10 @@ int count_enemies(); // not a const
 // ....
 //
 
-
 void play() {
   // put your code here;
-  // it doesn't necessary to use the infinite loop,
-  // because after exiting from this function -
+  // it doesn't have to use infinite loop,
+  // because upon exiting this function,
   // it will continue to work from the entry point.
 }
 }`;

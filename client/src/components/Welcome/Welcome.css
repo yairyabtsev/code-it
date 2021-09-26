@@ -8,6 +8,7 @@
 
 .Welcome__Logo {
   width: 40vh;
+  height: auto;
   position: absolute;
   top: 10vh;
 }
@@ -30,12 +31,58 @@
   color: white;
 }
 
+.WelcomeForm {
+  margin-top: 6px;
+}
+
 .Welcome-link {
   color: #61dafb;
 }
 
+.PapaInput {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: calc(120px + 20vw);
+  margin-bottom: 10px;
+}
+
+.Welcome button {
+  width: 80px;
+  height: 40px;
+  font-weight: 600;
+}
+
 .Welcome input {
-  min-height: calc(10px + 2vmin);
-  min-width: calc(100px + 20vmin);
-  margin-bottom: 14px;
+  width: 100%;
+  border-radius: 8px;
+  border-width: 3px;
+  outline: none;
+  border-color: transparent;
+  line-height: 36px;
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+  padding: 4px 6px;
+}
+
+.Welcome input.errorInput {
+  color: red;
+  border-color: red;
+}
+
+.Welcome .ErrorMessage {
+  font-size: 0.8rem;
+  color: red;
+  margin-left: 3px;
+}
+
+.Welcome .ErrorMessage {
+  visibility: visible;
+  font-size: 0.8rem;
+  color: red;
+  margin-left: 3px;
+}
+
+.Welcome .ErrorMessage.hidden {
+  visibility: hidden;
 }

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, {useState, useEffect, useRef, useMemo} from "react";
 import styled from "styled-components";
 import io from "socket.io-client";
 import {cookies} from "../../App";
@@ -12,14 +12,14 @@ const Chat = () => {
   const [message, setMessage] = useState("");
 
   const socketRef = useRef();
+  const yourName = useMemo(() => cookies.get('name'), []);
 
   useEffect(() => {
     socketRef.current = io.connect('/');
-
     socketRef.current.on("message"+thisHash, (message) => {
       receiveMessage(message);
     })
-  }, []);
+  }, [thisHash]);
 
   function receiveMessage(message) {
     // console.log(message.id)
@@ -47,17 +47,18 @@ const Chat = () => {
       <Container className="Chat__Content">
         {messages.map((message, index) => (
           message.id === yourID ?
-            (message.body && <MyRow key={index}>
+            message.body && <MyRow key={index}>
+              <YourName>{yourName}</YourName>
               <MyMessage>
                 {message.body}
               </MyMessage>
-            </MyRow>) :
-            (message.body && <PartnerRow key={index}>
+            </MyRow> :
+            message.body && <PartnerRow key={index}>
               {isNameShown(messages, index) && <PartnerName>{message.name}</PartnerName>}
               <PartnerMessage>
                 {message.body}
               </PartnerMessage>
-            </PartnerRow>)
+            </PartnerRow>
         ))}
       </Container>
       <Form className="Chat__Form" onSubmit={sendMessage}>
@@ -149,7 +150,8 @@ const Form = styled.form`
 const MyRow = styled.div`
   color: #F1F0F0;
   display: flex;
-  justify-content: flex-end;
+  align-items: flex-end;
+  flex-direction: column;
   margin-top: 10px;
 `;
 
@@ -164,8 +166,7 @@ const MyMessage = styled.div`
 `;
 
 const PartnerRow = styled(MyRow)`
-  justify-content: flex-start;
-  flex-direction: column;
+  align-items: flex-start;
 `;
 
 const PartnerMessage = styled.div`
@@ -177,8 +178,13 @@ const PartnerMessage = styled.div`
   border-radius: 8px 8px 8px 16px;  
 `;
 
-const PartnerName = styled.span`
-  margin-left: 10px;
+const YourName = styled.span`
+  margin-right: 10px;
   margin-bottom: 5px;
   font-weight: bold;
+`;
+
+const PartnerName = styled(YourName)`
+  margin-right: 0;
+  margin-left: 10px;
 `;
