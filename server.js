@@ -29,6 +29,7 @@ async function addUser(body) {
 }
 
 async function updateLocation(data) {
+  console.log(data);
   let loc = data.delta;
   const mongoClient = new MongoClient(url, {useNewUrlParser: true, useUnifiedTopology: true});
   try {
@@ -36,9 +37,10 @@ async function updateLocation(data) {
     const db = mongoClient.db("codeitdb");
     const collection = db.collection("location");
     const result = await collection.findOneAndUpdate(
-      {u_id: data.delta.u_id}, {
+      {u_id: data.delta.u_id},
+      {
         $inc: {x: data.delta.x, y: data.delta.y, division: data.delta.division},
-        hash: data.hash
+        $set: {hash: data.hash}
       },
       {returnDocument: "after"});
     loc = result.value;
