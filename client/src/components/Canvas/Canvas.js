@@ -10,7 +10,7 @@ const Canvas = () => {
   const ref = useRef(null);
   const id = cookies.get('id');
   const hash = cookies.get('hash');
-  const {width, height} = useContainerDimensions(ref);
+  const {width, height} = useContainerDimensions(ref);//TODO: fix auto update
   const [ships, setShips] = React.useState([
     // {x: 50, y: 50, division: Math.random() * 100, id: id},
     // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},

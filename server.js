@@ -29,7 +29,6 @@ async function addUser(body) {
 }
 
 async function updateLocation(data) {
-  console.log(data);
   let loc = data.delta;
   const mongoClient = new MongoClient(url, {useNewUrlParser: true, useUnifiedTopology: true});
   try {

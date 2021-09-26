@@ -32,7 +32,7 @@ Operator : '+' | '-' | '*' | '%' | '/' | '<<' | '>>' | '&&' | '||' | '|' | '&';
 loop : ('while' '('seq ')' '{' command* '}')
     | ('for' '('seq? ';'seq? ';'seq? ')' '{' command* '}')
     | ('do' '{'command* '}' 'while' '('seq ')' ';');
-cond : 'if' '('seq ')' '{' command* '}';
+cond : 'if' '('seq ')' ('{' command* '}'| command) ('else' ('{' command* '}'| command))?;
 exit : ('break' | 'continue' | ( 'return' (seq)?));
 jmp : NAME '(' (seq (',' seq)*)? ')';
 

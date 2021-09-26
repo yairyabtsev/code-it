@@ -8,6 +8,7 @@ import MyEditor from "../Editor/MyEditor";
 
 import quitGame from '../../assets/quit.svg';
 import './Page.css';
+import {Resize, ResizeVertical, ResizeHorizon} from "react-resize-layout";
 
 const Room = () => {
   const [name, setName] = useState(cookies.get('name'));
@@ -37,7 +38,7 @@ const Room = () => {
       <Page className="Page">
         <div className="Page__InteractiveElements">
           <div className="Page__Visual">
-            <img 
+            <img
               className='Page__QuitIcon'
               width={32}
               height={32}
@@ -45,8 +46,14 @@ const Room = () => {
               alt='Quit the game'
               onClick={handleClick}
             />
-            <Canvas />
-            <MyEditor />
+            {/*<Resize handleWidth="5px" handleColor="#777">*/}
+            {/*  <ResizeVertical>*/}
+                <Canvas/>
+              {/*</ResizeVertical>*/}
+              {/*<ResizeVertical minHeight="50px">*/}
+                <MyEditor/>
+              {/*</ResizeVertical>*/}
+            {/*</Resize>*/}
           </div>
           <div className="Page__Functional">
             <Score/>

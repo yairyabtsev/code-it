@@ -11,7 +11,6 @@ import {Compiler} from "./Compiler/Compiler"
 import uploadIcon from '../../assets/upload.svg';
 import {cookies} from "../../App";
 import io from "socket.io-client";
-import { ResizableBox } from 'react-resizable';
 
 import '../../../node_modules/react-resizable/css/styles.css';
 
@@ -126,13 +125,6 @@ class MyEditor extends React.Component {
 
     return (
       <>
-        <ResizableBox
-          height={250}
-          minConstraints={[0, 250]}
-          maxConstraints={[1000, 400]}
-          resizeHandles={['n']}
-          axis='y'
-        >
           <Page className="MyEditor">
             <div className="MyEditor__MonacoEditor">
               <div className="MyEditor__MonacoEditorTabs">
@@ -166,7 +158,6 @@ class MyEditor extends React.Component {
               </div>
             </div>
           </Page>
-        </ResizableBox>
         <Snackbar
           open={this.state.toastOpen}
           onClose={this.handleToastClose}
