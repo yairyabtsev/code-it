@@ -6,7 +6,7 @@ import {cookies} from "../../App";
 import io from "socket.io-client";
 
 
-const Canvas = () => {
+const Canvas = ({ canvasHeight }) => {
   const ref = useRef(null);
   const id = cookies.get('id');
   const hash = cookies.get('hash');
@@ -35,7 +35,7 @@ const Canvas = () => {
   }, [hash]);
 
   return (
-    <div className="Canvas" ref={ref}>
+    <div className="Canvas" ref={ref} style={{height: canvasHeight}}>
       <Stage width={width} height={height}>
         <Layer>
           {ships.map((ship) => (
