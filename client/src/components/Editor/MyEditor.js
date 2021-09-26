@@ -12,6 +12,11 @@ import uploadIcon from '../../assets/upload.svg';
 import {cookies} from "../../App";
 import io from "socket.io-client";
 
+import styled from 'styled-components';
+
+import { ResizableBox } from 'react-resizable';
+// import '../../../node_modules/react-resizable/css/styles.css';
+
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -46,7 +51,7 @@ class MyEditor extends React.Component {
   }
 
   onChange(newValue, e) {
-    this.setState({ code: newValue });
+    this.setState({code: newValue});
   }
 
   runCode() {
@@ -64,7 +69,7 @@ class MyEditor extends React.Component {
     reader.onload = () => {
       const result = String(reader.result);
 
-      this.setState({ code: result });
+      this.setState({code: result});
     };
 
     reader.onerror = () => {
@@ -86,13 +91,13 @@ class MyEditor extends React.Component {
 
     if (clear) {
       localStorage.removeItem('savedCode');
-      this.setState({ code: '', toastOpen: true });
+      this.setState({code: '', toastOpen: true});
     }
   }
 
   handleSave() {
     localStorage.setItem('savedCode', this.state.code);
-    this.setState({ toastOpen: true });
+    this.setState({toastOpen: true});
   }
 
   changeEditorLanguage = type => {
@@ -109,7 +114,7 @@ class MyEditor extends React.Component {
   };
 
   render() {
-    console.log('render');
+    // console.log('render');
     const code = this.state.code;
 
     const options = {
@@ -119,19 +124,30 @@ class MyEditor extends React.Component {
     return (
       <>
         <Page className="MyEditor">
-          <div className="MyEditor__MonacoEditor">
-            <div className="MyEditor__MonacoEditorTabs">
-              <span onClick={() => this.changeEditorLanguage('c')}>mini-C</span>
+          <ResizableBox
+            width={window.innerWidth - 400}
+            height={250}
+            style={{position: 'relative'}}
+            resizeHandles={['n']}
+            minConstraints={[window.innerWidth - 400, 32]}
+            maxConstraints={[window.innerWidth - 400, window.innerHeight - 100]}
+            handle={<MyHandle />}
+            onResize={this.props.onResize}
+          >
+            <div className="MyEditor__MonacoEditor">
+              <div className="MyEditor__MonacoEditorTabs">
+                <span onClick={() => this.changeEditorLanguage('c')}>mini-C</span>
+              </div>
+              <MonacoEditor
+                theme="vs-dark"
+                defaultLanguage={this.state.editorLanguage}
+                value={code}
+                options={options}
+                onChange={this.onChange}
+                editorDidMount={this.editorDidMount}
+              />
             </div>
-            <MonacoEditor
-              theme="vs-dark"
-              defaultLanguage={this.state.editorLanguage}
-              value={code}
-              options={options}
-              onChange={this.onChange}
-              editorDidMount={this.editorDidMount}
-            />
-          </div>
+          </ResizableBox>
           <div className="MyEditor__ButtonsContainer">
             <label className="MyEditor__UploadButton">
               <input
@@ -167,6 +183,21 @@ class MyEditor extends React.Component {
 };
 
 export default MyEditor;
+
+const MyHandle = React.forwardRef((props, ref) => {
+  const {handleAxis, ...restProps} = props;
+  return <CustomHandle ref={ref} {...restProps} />;
+});
+
+const CustomHandle = styled.div`
+  width: 100%;
+  height: 10px;
+  background-color: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: row-resize
+`;
 
 const DEFAULT_CODE = `
 //

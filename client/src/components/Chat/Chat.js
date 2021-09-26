@@ -22,7 +22,7 @@ const Chat = () => {
   }, [thisHash]);
 
   function receiveMessage(message) {
-    // console.log(message.id)
+    console.log(message)
     setMessages(oldMsgs => [...oldMsgs, message]);
   }
 
@@ -48,7 +48,7 @@ const Chat = () => {
         {messages.map((message, index) => (
           message.id === yourID ?
             message.body && <MyRow key={index}>
-              <YourName>{yourName}</YourName>
+              {isNameShown(messages, index) && <YourName>{yourName}</YourName>}
               <MyMessage>
                 {message.body}
               </MyMessage>

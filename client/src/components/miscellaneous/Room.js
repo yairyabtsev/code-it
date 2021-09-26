@@ -16,6 +16,8 @@ const Room = () => {
     // cookies.get('name') && cookies.get('id') && cookies.get('hash') && true
   );
 
+  const [canvasHeight, setCanvasHeight] = useState(window.innerHeight - 306);
+
   useEffect(() => {
     if (!mainPageOpened) {
       window.alert('You need to choose a name. Redirecting to the Welcome page...');
@@ -32,12 +34,16 @@ const Room = () => {
     }
   }
 
+  const onResize = (event, {element, size, handle}) => {
+    setCanvasHeight(window.innerHeight - (size.height + 56));
+  };
+
   return mainPageOpened && (
     !name ? <Redirect to="/"/> : (
       <Page className="Page">
         <div className="Page__InteractiveElements">
           <div className="Page__Visual">
-            <img 
+            <img
               className='Page__QuitIcon'
               width={32}
               height={32}
@@ -45,8 +51,8 @@ const Room = () => {
               alt='Quit the game'
               onClick={handleClick}
             />
-            <Canvas />
-            <MyEditor />
+            <Canvas canvasHeight={canvasHeight} />
+            <MyEditor onResize={onResize}/>
           </div>
           <div className="Page__Functional">
             <Score/>

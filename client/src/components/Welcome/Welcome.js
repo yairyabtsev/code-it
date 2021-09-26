@@ -48,6 +48,11 @@ export default class Welcome extends Component {
 
   componentDidMount() {
     this.socket = io.connect('/');
+    this.socket.on("your id", id => {
+      if (!cookies.get('id')) {
+        cookies.set('id', id, {path: '/'});
+      }
+    })
     this.socket.on("hash of session", hash => {
       if (!cookies.get('hash')) {
         cookies.set('hash', hash, {path: '/'});
@@ -68,8 +73,6 @@ export default class Welcome extends Component {
       this.setState({ inputError: true });
       return;
     }
-
-    cookies.set('id', 111);
     cookies.set('name', this.state.value, {path: '/'});
     const userObject = {
       id: cookies.get("id"),

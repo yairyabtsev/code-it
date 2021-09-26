@@ -6,11 +6,11 @@ import {cookies} from "../../App";
 import io from "socket.io-client";
 
 
-const Canvas = () => {
+const Canvas = ({ canvasHeight }) => {
   const ref = useRef(null);
   const id = cookies.get('id');
   const hash = cookies.get('hash');
-  const {width, height} = useContainerDimensions(ref);
+  const {width, height} = useContainerDimensions(ref);//TODO: fix auto update
   const [ships, setShips] = React.useState([
     // {x: 50, y: 50, division: Math.random() * 100, id: id},
     // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
@@ -35,7 +35,7 @@ const Canvas = () => {
   }, [hash]);
 
   return (
-    <div className="Canvas" ref={ref}>
+    <div className="Canvas" ref={ref} style={{height: canvasHeight}}>
       <Stage width={width} height={height}>
         <Layer>
           {ships.map((ship) => (

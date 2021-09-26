@@ -12,8 +12,7 @@
 
 .MyEditor__MonacoEditor {
   width: 100%;
-  min-height: 250px;
-  height: 250px;
+  height: 100%;
   border: 1px solid #F8F6F5;
   overflow: hidden;
 }
@@ -44,8 +43,8 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  height: 56px;
   background-color: #35364E;
-  padding: 8px;
 }
 
 .MyEditor__ButtonsGroup>button {
