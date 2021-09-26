@@ -125,15 +125,29 @@ async function getLocation(hash) {
   return loc;
 }
 
-function resetScore(u_id) {
-
+async function resetScore(u_id) {
+  const mongoClient = new MongoClient(url, {useNewUrlParser: true, useUnifiedTopology: true});
+  try {
+    await mongoClient.connect();
+    const db = mongoClient.db("codeitdb");
+    const collection = db.collection("users");
+    const result = await collection.findOneAndUpdate(
+      {u_id: u_id},
+      {$set: {score: 0, injuries: 0}});
+  } catch (err) {
+    console.log(err);
+    return false;
+  } finally {
+    await mongoClient.close();
+  }
+  return true;
 }
 
 io.on("connection", socket => {
   const {id} = socket.client;
   socket.emit("your id", socket.id);
-  socket.on("reset score", u_id => resetScore(u_id)
-    .then(io.emit("score"+u_id, {score: 0, injuries: 0})));
+  socket.on("reset score", u_id =>
+    resetScore(u_id).then(io.emit("score"+u_id, ({score: 0, injuries: 0}))));
   socket.on("add user", body => {
     addUser(body);
     findRoom(body.id, id).then(obj => {

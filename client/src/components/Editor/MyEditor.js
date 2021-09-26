@@ -48,7 +48,7 @@ class MyEditor extends React.Component {
   }
 
   onChange(newValue, e) {
-    this.setState({ code: newValue });
+    this.setState({code: newValue});
   }
 
   runCode() {
@@ -66,7 +66,7 @@ class MyEditor extends React.Component {
     reader.onload = () => {
       const result = String(reader.result);
 
-      this.setState({ code: result });
+      this.setState({code: result});
     };
 
     reader.onerror = () => {
@@ -88,13 +88,13 @@ class MyEditor extends React.Component {
 
     if (clear) {
       localStorage.removeItem('savedCode');
-      this.setState({ code: '', toastOpen: true });
+      this.setState({code: '', toastOpen: true});
     }
   }
 
   handleSave() {
     localStorage.setItem('savedCode', this.state.code);
-    this.setState({ toastOpen: true });
+    this.setState({toastOpen: true});
   }
 
   changeEditorLanguage = type => {
@@ -116,7 +116,7 @@ class MyEditor extends React.Component {
   };
 
   render() {
-    console.log('render');
+    // console.log('render');
     const code = this.state.code;
 
     const options = {
@@ -125,39 +125,39 @@ class MyEditor extends React.Component {
 
     return (
       <>
-          <Page className="MyEditor">
-            <div className="MyEditor__MonacoEditor">
-              <div className="MyEditor__MonacoEditorTabs">
-                <span onClick={() => this.changeEditorLanguage('c')}>mini-C</span>
-              </div>
-              <MonacoEditor
-                theme="vs-dark"
-                defaultLanguage={this.state.editorLanguage}
-                value={code}
-                options={options}
-                onChange={this.onChange}
-                editorDidMount={this.editorDidMount}
+        <Page className="MyEditor">
+          <div className="MyEditor__MonacoEditor">
+            <div className="MyEditor__MonacoEditorTabs">
+              <span onClick={() => this.changeEditorLanguage('c')}>mini-C</span>
+            </div>
+            <MonacoEditor
+              theme="vs-dark"
+              defaultLanguage={this.state.editorLanguage}
+              value={code}
+              options={options}
+              onChange={this.onChange}
+              editorDidMount={this.editorDidMount}
+            />
+          </div>
+          <div className="MyEditor__ButtonsContainer">
+            <label className="MyEditor__UploadButton">
+              <input
+                type="file"
+                name="myFile"
+                onChange={this.uploadFile}
               />
+              <span className="MyEditor__UploadButtonText">Upload your file</span>
+              <img src={uploadIcon} alt="upload"/>
+            </label>
+            <div className="MyEditor__ButtonsGroup">
+              <Button>Random</Button>
+              <Button onClick={this.runCode}>Run</Button>
+              <Button onClick={this.downloadContent}>Download</Button>
+              <Button onClick={this.handleSave}>Save</Button>
+              <Button onClick={this.handleDelete}>Delete</Button>
             </div>
-            <div className="MyEditor__ButtonsContainer">
-              <label className="MyEditor__UploadButton">
-                <input
-                  type="file"
-                  name="myFile"
-                  onChange={this.uploadFile}
-                />
-                <span className="MyEditor__UploadButtonText">Upload your file</span>
-                <img src={uploadIcon} alt="upload"/>
-              </label>
-              <div className="MyEditor__ButtonsGroup">
-                <Button>Random</Button>
-                <Button onClick={this.runCode}>Run</Button>
-                <Button onClick={this.downloadContent}>Download</Button>
-                <Button onClick={this.handleSave}>Save</Button>
-                <Button onClick={this.handleDelete}>Delete</Button>
-              </div>
-            </div>
-          </Page>
+          </div>
+        </Page>
         <Snackbar
           open={this.state.toastOpen}
           onClose={this.handleToastClose}
