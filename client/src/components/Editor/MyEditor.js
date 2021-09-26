@@ -110,11 +110,6 @@ class MyEditor extends React.Component {
     this.setState({toastOpen: false});
   };
 
-  onResize = (event, {element, size, handle}) => {
-    this.setState({height: size.height});
-    console.log('resize!');
-  };
-
   render() {
     // console.log('render');
     const code = this.state.code;

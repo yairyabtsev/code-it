@@ -100,7 +100,6 @@ export default class Welcome extends Component {
                   className={this.state.inputError ? 'errorInput' : ''}
                   name="user-name"
                   aria-label="user name"
-                  required
                   autoFocus
                   maxLength={32}
                   placeholder='Your name'
