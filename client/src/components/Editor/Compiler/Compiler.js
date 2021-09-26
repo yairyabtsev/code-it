@@ -13,5 +13,7 @@ export function Compiler(code) {
   parser.buildParseTrees = true;
   const tree = parser.code();
   console.log(tree.toStringTree(parser.ruleNames));
+  console.log(tree);
+  // console.log(tree.accept());
 
 }

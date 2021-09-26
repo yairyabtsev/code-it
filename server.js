@@ -146,8 +146,10 @@ async function resetScore(u_id) {
 io.on("connection", socket => {
   const {id} = socket.client;
   socket.emit("your id", socket.id);
-  socket.on("reset score", u_id =>
-    resetScore(u_id).then(io.emit("score"+u_id, ({score: 0, injuries: 0}))));
+  socket.on("reset score", u_id => {
+      resetScore(u_id).then(io.emit("score"+u_id, ({score: 0, injuries: 0})))
+    }
+  );
   socket.on("add user", body => {
     addUser(body);
     findRoom(body.id, id).then(obj => {

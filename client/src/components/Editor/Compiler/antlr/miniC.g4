@@ -3,17 +3,33 @@ grammar miniC;
 options {
 	language=JavaScript;
 }
-
+@parser::header
+{
+}
+@parser::members
+{
+}
+@lexer::header
+{
+}
+@lexer::members
+{
+}
 code : object*;
 
-object : (((var_decl | struct) ';') | fun);
+object returns [String txt=""]: (((var_decl | struct) ';') | fun{$txt=$fun.text;});
 
 struct : 'struct' NAME '{' (var_decl ';')* '}';
-fun : (Type| NAME) NAME '(' (Type NAME (',' Type NAME)*)? ')' ('{' command* '}' | ';');
+fun returns [String txt=""]: (Type| NAME){$txt+="function ";}
+                           NAME{$txt+=$NAME.text;} '('{$txt+="(";}
+                            (Type NAME (',' Type NAME)*)?
+                            ')'{$txt+=")";} '{'{$txt+="{";}
+                            command*
+                            '}'{$txt+="}";};
 var_decl : Type ( NAME | init) (',' NAME | init)*;
 init : NAME ('[' seq ']')? Operator? '=' seq;
 
-seq   : Int | Float | Bool | NAME | NAME '[' seq ']' | '{' seq (',' seq)* '}'
+seq   : Int | Float | Bool | NAME | NAME '[' seq ']' | '{' seq (',' seq)* '}' | '(' seq ')'
        | seq Operator seq
        ;
 
@@ -24,7 +40,7 @@ Bool : ('true' | 'false');
 
 command : ((seq | var_decl | init | jmp | exit) ';') | cond | loop;
 
-Type  : 'int' | 'float' | 'void' | 'bool';
+Type : 'int' | 'float' | 'void' | 'bool';
 
 Operator : '+' | '-' | '*' | '%' | '/' | '<<' | '>>' | '&&' | '||' | '|' | '&';
 
