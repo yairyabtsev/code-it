@@ -8,7 +8,6 @@ import MyEditor from "../Editor/MyEditor";
 
 import quitGame from '../../assets/quit.svg';
 import './Page.css';
-import {Resize, ResizeVertical, ResizeHorizon} from "react-resize-layout";
 
 const Room = () => {
   const [name, setName] = useState(cookies.get('name'));
@@ -16,6 +15,8 @@ const Room = () => {
     cookies.get('name')
     // cookies.get('name') && cookies.get('id') && cookies.get('hash') && true
   );
+
+  const [canvasHeight, setCanvasHeight] = useState(window.innerHeight - 306);
 
   useEffect(() => {
     if (!mainPageOpened) {
@@ -33,6 +34,10 @@ const Room = () => {
     }
   }
 
+  const onResize = (event, {element, size, handle}) => {
+    setCanvasHeight(window.innerHeight - (size.height + 56));
+  };
+
   return mainPageOpened && (
     !name ? <Redirect to="/"/> : (
       <Page className="Page">
@@ -46,14 +51,8 @@ const Room = () => {
               alt='Quit the game'
               onClick={handleClick}
             />
-            {/*<Resize handleWidth="5px" handleColor="#777">*/}
-            {/*  <ResizeVertical>*/}
-                <Canvas/>
-              {/*</ResizeVertical>*/}
-              {/*<ResizeVertical minHeight="50px">*/}
-                <MyEditor/>
-              {/*</ResizeVertical>*/}
-            {/*</Resize>*/}
+            <Canvas canvasHeight={canvasHeight} />
+            <MyEditor onResize={onResize}/>
           </div>
           <div className="Page__Functional">
             <Score/>
