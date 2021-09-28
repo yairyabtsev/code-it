@@ -27,7 +27,7 @@ const Canvas = ({canvasHeight}) => {
   const socketRef = useRef();
   useEffect(() => {
     socketRef.current = io.connect('/');
-
+    console.log(width, height);
     socketRef.current.on("location" + hash, (location) => {
       console.log(location);
       setShips(location.ships);

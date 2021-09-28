@@ -28,6 +28,23 @@ async function addUser(body) {
   return true;
 }
 
+async function findLocation(u_id) {
+  const mongoClient = new MongoClient(url, {useNewUrlParser: true, useUnifiedTopology: true});
+  let loc = {};
+  try {
+    await mongoClient.connect();
+    const db = mongoClient.db("codeitdb");
+    const collection = db.collection("location");
+    loc = await collection.findOne({u_id: u_id});
+  } catch (err) {
+    console.log(err);
+    return false;
+  } finally {
+    await mongoClient.close();
+  }
+  return loc;
+}
+
 async function updateLocation(data) {
   let loc = data.delta;
   const mongoClient = new MongoClient(url, {useNewUrlParser: true, useUnifiedTopology: true});
@@ -38,27 +55,28 @@ async function updateLocation(data) {
     const query = {$inc: data.delta};
     if (data.hash)
       query.$set = {hash: data.hash};
-    console.log(query);
+    // console.log(query);
     const result = await collection.findOneAndUpdate(
       {u_id: data.u_id}, query,
       {returnDocument: "after"});
     loc = result.value;
+    console.log(loc.x, loc.y, loc.division);
     const query2 = {};
     let flag = false;
     if (loc.x > 100) {
-      query2.x = 100;
+      loc.x = 100;
       flag = true;
     }
     if (loc.y > 100) {
-      query2.y = 100;
+      loc.y = 100;
       flag = true;
     }
     if (loc.x < 0) {
-      query2.x = 0;
+      loc.x = 0;
       flag = true;
     }
     if (loc.y < 0) {
-      query2.y = 0;
+      loc.y = 0;
       flag = true;
     }
     if (Math.abs(loc.division) > 100) {
@@ -69,12 +87,14 @@ async function updateLocation(data) {
       loc.division += 100;
       flag = true;
     }
+    console.log(loc.x, loc.y, loc.division);
     if (flag) {
       const result2 = await collection.findOneAndUpdate(
         {u_id: data.u_id}, {$set: {x: loc.x, y: loc.y, division: loc.division}},
         {returnDocument: "after"});
       loc = result2.value;
     }
+    console.log(loc.x, loc.y, loc.division);
   } catch (err) {
     console.log(err);
     return false;
@@ -197,6 +217,15 @@ io.on("connection", socket => {
   });
   socket.on("turn", data => {
     updateLocation({delta: {division: data.division}, u_id: data.u_id});
+  });
+  socket.on("move", data => {
+    findLocation(data.u_id).then(loc =>
+      updateLocation({
+        delta: {
+          x: Math.cos(loc.division / 50 * Math.PI) * data.distance,
+          y: Math.sin(loc.division / 50 * Math.PI) * data.distance
+        }, u_id: data.u_id
+      }));
   });
   socket.on("send message", body => {
     io.emit("message" + body.hash, body)

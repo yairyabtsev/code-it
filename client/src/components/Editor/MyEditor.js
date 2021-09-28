@@ -76,12 +76,30 @@ class MyEditor extends React.Component {
     this.socketRef.current.emit("get location", this.state.hash);
     await this.sleep(delay / 6 * num);
   }
+  async move(num) {
+    const delay = 750;
+    if(num<0)
+      return;
+    const min = 3;
+    while (num > min) {
+      this.socketRef.current.emit("move", {u_id: this.state.id, distance: min});
+      num -= min;
+      this.socketRef.current.emit("get location", this.state.hash);
+      await this.sleep(delay);
+    }
+    if (num > 0)
+      this.socketRef.current.emit("move", {u_id: this.state.id, distance: num});
 
-  runCode() {
+    this.socketRef.current.emit("get location", this.state.hash);
+    await this.sleep(delay / min * num);
+  }
+
+  async runCode() {
     this.socketRef.current.emit("reset score", this.state.id);
     this.socketRef.current.emit("get location", this.state.hash);
     this.handleSave();
-    this.turn(-59);
+    await this.turn(-59);
+    await this.move(100);
     // Compiler(this.state.code);
   }
 
