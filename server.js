@@ -60,41 +60,42 @@ async function updateLocation(data) {
       {u_id: data.u_id}, query,
       {returnDocument: "after"});
     loc = result.value;
-    console.log(loc.x, loc.y, loc.division);
-    const query2 = {};
-    let flag = false;
-    if (loc.x > 100) {
-      loc.x = 100;
-      flag = true;
+    // console.log(loc.x, loc.y, loc.division);
+    {
+      let flag = false;
+      if (loc.x > 100) {
+        loc.x = 100;
+        flag = true;
+      }
+      if (loc.y > 100) {
+        loc.y = 100;
+        flag = true;
+      }
+      if (loc.x < 0) {
+        loc.x = 0;
+        flag = true;
+      }
+      if (loc.y < 0) {
+        loc.y = 0;
+        flag = true;
+      }
+      if (Math.abs(loc.division) > 100) {
+        loc.division %= 100;
+        flag = true;
+      }
+      if (loc.division < 0) {
+        loc.division += 100;
+        flag = true;
+      }
+      // console.log(loc.x, loc.y, loc.division);
+      if (flag) {
+        const result2 = await collection.findOneAndUpdate(
+          {u_id: data.u_id}, {$set: {x: loc.x, y: loc.y, division: loc.division}},
+          {returnDocument: "after"});
+        loc = result2.value;
+      }
     }
-    if (loc.y > 100) {
-      loc.y = 100;
-      flag = true;
-    }
-    if (loc.x < 0) {
-      loc.x = 0;
-      flag = true;
-    }
-    if (loc.y < 0) {
-      loc.y = 0;
-      flag = true;
-    }
-    if (Math.abs(loc.division) > 100) {
-      loc.division %= 100;
-      flag = true;
-    }
-    if (loc.division < 0) {
-      loc.division += 100;
-      flag = true;
-    }
-    console.log(loc.x, loc.y, loc.division);
-    if (flag) {
-      const result2 = await collection.findOneAndUpdate(
-        {u_id: data.u_id}, {$set: {x: loc.x, y: loc.y, division: loc.division}},
-        {returnDocument: "after"});
-      loc = result2.value;
-    }
-    console.log(loc.x, loc.y, loc.division);
+    // console.log(loc.x, loc.y, loc.division);
   } catch (err) {
     console.log(err);
     return false;
@@ -194,6 +195,37 @@ async function resetScore(u_id) {
   return true;
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function shot(x, y, division, hash, u_id) {
+  const mongoClient = new MongoClient(url, {useNewUrlParser: true, useUnifiedTopology: true});
+  try {
+    await mongoClient.connect();
+    const db = mongoClient.db("codeitdb");
+    let location = {x: x, y: y, division: division, u_id: u_id, hash: hash, type: 0};
+    await db.collection("location").insertOne(location);
+    while (100 >= location.x >= 0 && 100 >= location.y >= 0) {
+      await sleep(750);
+      location.x += Math.cos(location.division / 50 * Math.PI) * 3;
+      location.y += Math.sin(location.division / 50 * Math.PI) * 3;
+      location = (await db.collection("location").findOneAndUpdate({_id: location._id},
+        {$inc:
+            {x: Math.cos(location.division / 50 * Math.PI) * 3,
+            y: Math.sin(location.division / 50 * Math.PI) * 3}},
+        {returnDocument: "after"})).value;
+      console.log(location);
+    }
+  } catch (err) {
+    console.log(err);
+    return false;
+  } finally {
+    await mongoClient.close();
+  }
+  return true;
+}
+
 io.on("connection", socket => {
   const {id} = socket.client;
   socket.emit("your id", socket.id);
@@ -208,11 +240,11 @@ io.on("connection", socket => {
       updateLocation(obj);
     });
   });
-  socket.on("get location", hash => {
+  socket.on("get location", data => {
     // console.log(hash);
-    getLocation(hash).then(loc => {
+    getLocation(data.hash).then(loc => {
       // console.log(loc);
-      io.emit("location" + hash, loc);
+      io.emit("location" + data.u_id, loc);
     });
   });
   socket.on("turn", data => {
@@ -226,6 +258,10 @@ io.on("connection", socket => {
           y: Math.sin(loc.division / 50 * Math.PI) * data.distance
         }, u_id: data.u_id
       }));
+  });
+  socket.on("shot", u_id => {
+    findLocation(u_id).then(loc =>
+      shot(loc.x, loc.y, loc.division, loc.hash, u_id))
   });
   socket.on("send message", body => {
     io.emit("message" + body.hash, body)

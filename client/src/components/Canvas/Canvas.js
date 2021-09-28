@@ -22,25 +22,44 @@ const Canvas = ({canvasHeight}) => {
     // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
     // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
   ]);
+  const [counter, setCounter] = React.useState(0);
+
   const {width, height} = useContainerDimensions(ref);//TODO: fix auto update
   const div = 3.5;
   const socketRef = useRef();
   useEffect(() => {
     socketRef.current = io.connect('/');
     console.log(width, height);
-    socketRef.current.on("location" + hash, (location) => {
-      console.log(location);
+    socketRef.current.on("location" + id, (location) => {
+      // console.log(location);
       setShips(location.ships);
       setBullets(location.bullets);
+      setTimeout(() => {
+        socketRef.current.emit("get location", {u_id: id, hash: hash});
+        setCounter(counter + 1);
+        console.log(counter);
+      }, 250);
     })
+    // update();
   }, [hash]);
 
   return (
     <div className="Canvas" ref={ref} style={{height: canvasHeight}}>
-      <Stage width={width} height={height}>
+      <Stage width={width ? width : 1220} height={height ? height : 654}>
         <Layer>
-          {ships.map((ship) => (
+          {bullets.map((bullet, index) => (
+            <Circle
+              key={index}
+              x={bullet.x / 100 * (Math.min(width, height) - 200 / div) + 100 / div + 100 / div}
+              y={bullet.y / 100 * (Math.min(width, height) - 200 / div) + 100 / div}
+              radius={3}
+              fill={((id === bullet.u_id) ? "#425e17" : "#497e76")}
+              strokeWidth={0.9}
+            />
+          ))}
+          {ships.map((ship, index) => (
             <Shape
+              key={index}
               x={ship.x / 100 * (Math.min(width, height) - 200 / div) + 50 / div}
               y={ship.y / 100 * (Math.min(width, height) - 200 / div) + 50 / div}
               rotation={(ship.division % 100 + 100) % 100 / 100 * 360}
@@ -56,15 +75,6 @@ const Canvas = ({canvasHeight}) => {
               }}
               fill={(id === ship.u_id) ? "#425e17" : "#497e76"}
               stroke="black"
-              strokeWidth={0.9}
-            />
-          ))}
-          {bullets.map((bullet) => (
-            <Circle
-              x={bullet.x / 100 * (Math.min(width, height) - 200 / div) + 100 / div + 100 / div}
-              y={bullet.y / 100 * (Math.min(width, height) - 200 / div) + 100 / div}
-              radius={3}
-              fill={((id === bullet.id) ? "#425e17" : "#497e76")}
               strokeWidth={0.9}
             />
           ))}

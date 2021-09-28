@@ -67,39 +67,39 @@ class MyEditor extends React.Component {
     while (num > 6) {
       this.socketRef.current.emit("turn", {u_id: this.state.id, division: 6 * div});
       num -= 6;
-      this.socketRef.current.emit("get location", this.state.hash);
       await this.sleep(delay);
     }
     if (num > 0)
       this.socketRef.current.emit("turn", {u_id: this.state.id, division: num * div});
-
-    this.socketRef.current.emit("get location", this.state.hash);
     await this.sleep(delay / 6 * num);
   }
+
   async move(num) {
     const delay = 750;
-    if(num<0)
+    if (num < 0)
       return;
     const min = 3;
     while (num > min) {
       this.socketRef.current.emit("move", {u_id: this.state.id, distance: min});
       num -= min;
-      this.socketRef.current.emit("get location", this.state.hash);
       await this.sleep(delay);
     }
     if (num > 0)
       this.socketRef.current.emit("move", {u_id: this.state.id, distance: num});
 
-    this.socketRef.current.emit("get location", this.state.hash);
     await this.sleep(delay / min * num);
   }
 
   async runCode() {
     this.socketRef.current.emit("reset score", this.state.id);
-    this.socketRef.current.emit("get location", this.state.hash);
+    this.socketRef.current.emit("get location", {u_id: this.state.id, hash: this.state.hash});
     this.handleSave();
-    await this.turn(-59);
-    await this.move(100);
+    while (true) {
+      await this.turn(Math.random() * 100 - 50);
+      await this.move(Math.random() * 50);
+      this.socketRef.current.emit("shot", this.state.id);
+      await this.sleep(750);
+    }
     // Compiler(this.state.code);
   }
 

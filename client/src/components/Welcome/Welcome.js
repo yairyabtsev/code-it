@@ -80,8 +80,8 @@ export default class Welcome extends Component {
     };
     this.setState({loggedIn: true});
     this.socket.emit("add user", userObject);
-  }
 
+  }
   render() {
     return this.state.loggedIn ? <Redirect to="/game"/> : (
       <div className="Welcome">
