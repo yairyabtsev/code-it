@@ -98,6 +98,7 @@ class MyEditor extends React.Component {
       await this.turn(Math.random() * 100 - 50);
       await this.move(Math.random() * 50);
       this.socketRef.current.emit("shot", this.state.id);
+      // break;
       await this.sleep(750);
     }
     // Compiler(this.state.code);

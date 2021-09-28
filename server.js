@@ -206,17 +206,21 @@ async function shot(x, y, division, hash, u_id) {
     const db = mongoClient.db("codeitdb");
     let location = {x: x, y: y, division: division, u_id: u_id, hash: hash, type: 0};
     await db.collection("location").insertOne(location);
-    while (100 >= location.x >= 0 && 100 >= location.y >= 0) {
-      await sleep(750);
+    while (100 >= location.x && location.x >= 0 && 100 >= location.y && location.y >= 0) {
+      await sleep(250);
       location.x += Math.cos(location.division / 50 * Math.PI) * 3;
       location.y += Math.sin(location.division / 50 * Math.PI) * 3;
       location = (await db.collection("location").findOneAndUpdate({_id: location._id},
-        {$inc:
-            {x: Math.cos(location.division / 50 * Math.PI) * 3,
-            y: Math.sin(location.division / 50 * Math.PI) * 3}},
+        {
+          $inc:
+            {
+              x: Math.cos(location.division / 50 * Math.PI) * 3,
+              y: Math.sin(location.division / 50 * Math.PI) * 3
+            }
+        },
         {returnDocument: "after"})).value;
-      console.log(location);
     }
+    await db.collection("location").findOneAndDelete({_id: location._id});
   } catch (err) {
     console.log(err);
     return false;

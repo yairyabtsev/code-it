@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {Stage, Layer, Circle, Shape} from 'react-konva';
+import {Stage, Layer, Circle, Shape, Rect} from 'react-konva';
 import './Canvas.css';
 import {useContainerDimensions} from "../miscellaneous/useContainerDimensions";
 import {cookies} from "../../App";
@@ -11,10 +11,16 @@ const Canvas = ({canvasHeight}) => {
   const id = cookies.get('id');
   const hash = cookies.get('hash');
   const [ships, setShips] = React.useState([
-    // {x: 50, y: 50, division: Math.random() * 100, id: id},
-    // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
-    // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
-    // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
+    // {x: 5, y: 5, division: 0, u_id: "shs"},
+    // {x: 5, y: 20, division: 0, u_id: "shs"},
+    // {x: 5, y: 35, division: 0, u_id: "shs"},
+    // {x: 5, y: 50, division: 0, u_id: "shs"},
+    // {x: 5, y: 65, division: 0, u_id: "shs"},
+    // {x: 5, y: 5, division: 0, u_id: id},
+    // {x: 5, y: 20, division: -25, u_id: id},
+    // {x: 5, y: 35, division: -50, u_id: id},
+    // {x: 5, y: 50, division: -75, u_id: id},
+    // {x: 5, y: 65, division: -100, u_id: id},
   ]);
   const [bullets, setBullets] = React.useState([
     // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: id},
@@ -47,11 +53,21 @@ const Canvas = ({canvasHeight}) => {
     <div className="Canvas" ref={ref} style={{height: canvasHeight}}>
       <Stage width={width ? width : 1220} height={height ? height : 654}>
         <Layer>
+          <Rect
+            x={(width > height ? (width - height) / 2 : 0)}
+            y={(width < height ? (-width + height) / 2 : 0)}
+            width={Math.min(width, height) }
+            height={Math.min(width, height)}
+            stroke="black"
+            strokeWidth={0.9}
+          />
           {bullets.map((bullet, index) => (
             <Circle
               key={index}
-              x={bullet.x / 100 * (Math.min(width, height) - 200 / div) + 100 / div + 100 / div}
-              y={bullet.y / 100 * (Math.min(width, height) - 200 / div) + 100 / div}
+              x={bullet.x / 100 * (Math.min(width, height) - 200 / div) + 100 / div +
+              (width > height ? (width - height) / 2 : 0)}
+              y={bullet.y / 100 * (Math.min(width, height) - 200 / div) + 100 / div +
+              (width < height ? (-width + height) / 2 : 0)}
               radius={3}
               fill={((id === bullet.u_id) ? "#425e17" : "#497e76")}
               strokeWidth={0.9}
@@ -60,16 +76,18 @@ const Canvas = ({canvasHeight}) => {
           {ships.map((ship, index) => (
             <Shape
               key={index}
-              x={ship.x / 100 * (Math.min(width, height) - 200 / div) + 50 / div}
-              y={ship.y / 100 * (Math.min(width, height) - 200 / div) + 50 / div}
-              rotation={(ship.division % 100 + 100) % 100 / 100 * 360}
+              x={(ship.x / 100 * (Math.min(width, height) - 200 / div) + 100 / div) +
+              (width > height ? (width - height) / 2 : 0)}
+              y={ship.y / 100 * (Math.min(width, height) - 200 / div) + 100 / div +
+              (width < height ? (-width + height) / 2 : 0)}
+              rotation={ship.division / 100 * 360}
               sceneFunc={(context, shape) => {
                 context.beginPath();
-                context.rect(5 / div, 0 / div, 90 / div, 100 / div);
-                context.rect(0 / div, 0 / div, 100 / div, 15 / div);
-                context.rect(0 / div, 85 / div, 100 / div, 15 / div);
-                context.rect(70 / div, 42 / div, 50 / div, 16 / div);
-                context.ellipse(50 / div, 50 / div, 30 / div, 30 / div, 10 / div, 20 / div, 180);
+                context.rect(-45 / div, -50 / div, 90 / div, 100 / div);
+                context.rect(-50 / div, -50 / div, 100 / div, 15 / div);
+                context.rect(-50 / div, 35 / div, 100 / div, 15 / div);
+                context.rect(20 / div, -8 / div, 60 / div, 16 / div);
+                context.ellipse(0 / div, 0 / div, 30 / div, 30 / div, 10 / div, 20 / div, 180);
                 context.closePath();
                 context.fillStrokeShape(shape);
               }}
