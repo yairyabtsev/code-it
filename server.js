@@ -35,14 +35,46 @@ async function updateLocation(data) {
     await mongoClient.connect();
     const db = mongoClient.db("codeitdb");
     const collection = db.collection("location");
-    const qwery = {$inc: data.delta};
+    const query = {$inc: data.delta};
     if (data.hash)
-      qwery.$set = {hash: data.hash};
-    console.log(qwery);
+      query.$set = {hash: data.hash};
+    console.log(query);
     const result = await collection.findOneAndUpdate(
-      {u_id: data.u_id}, qwery,
+      {u_id: data.u_id}, query,
       {returnDocument: "after"});
     loc = result.value;
+    const query2 = {};
+    let flag = false;
+    if (loc.x > 100) {
+      query2.x = 100;
+      flag = true;
+    }
+    if (loc.y > 100) {
+      query2.y = 100;
+      flag = true;
+    }
+    if (loc.x < 0) {
+      query2.x = 0;
+      flag = true;
+    }
+    if (loc.y < 0) {
+      query2.y = 0;
+      flag = true;
+    }
+    if (Math.abs(loc.division) > 100) {
+      loc.division %= 100;
+      flag = true;
+    }
+    if (loc.division < 0) {
+      loc.division += 100;
+      flag = true;
+    }
+    if (flag) {
+      const result2 = await collection.findOneAndUpdate(
+        {u_id: data.u_id}, {$set: {x: loc.x, y: loc.y, division: loc.division}},
+        {returnDocument: "after"});
+      loc = result2.value;
+    }
   } catch (err) {
     console.log(err);
     return false;
@@ -103,7 +135,7 @@ async function findRoom(u_id, hash) {
   } finally {
     await mongoClient.close();
   }
-  return {hash: hash, delta: delta, u_id:u_id};
+  return {hash: hash, delta: delta, u_id: u_id};
 }
 
 async function getLocation(hash) {
@@ -157,12 +189,14 @@ io.on("connection", socket => {
     });
   });
   socket.on("get location", hash => {
-    console.log(hash);
+    // console.log(hash);
     getLocation(hash).then(loc => {
-      console.log(loc);
+      // console.log(loc);
       io.emit("location" + hash, loc);
     });
-
+  });
+  socket.on("turn", data => {
+    updateLocation({delta: {division: data.division}, u_id: data.u_id});
   });
   socket.on("send message", body => {
     io.emit("message" + body.hash, body)

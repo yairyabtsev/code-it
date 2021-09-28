@@ -43,7 +43,7 @@ const Canvas = ({canvasHeight}) => {
             <Shape
               x={ship.x / 100 * (Math.min(width, height) - 200 / div) + 50 / div}
               y={ship.y / 100 * (Math.min(width, height) - 200 / div) + 50 / div}
-              rotation={ship.division / 100 * 360}
+              rotation={(ship.division % 100 + 100) % 100 / 100 * 360}
               sceneFunc={(context, shape) => {
                 context.beginPath();
                 context.rect(5 / div, 0 / div, 90 / div, 100 / div);

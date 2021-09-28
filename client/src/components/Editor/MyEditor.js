@@ -14,7 +14,7 @@ import io from "socket.io-client";
 
 import styled from 'styled-components';
 
-import { ResizableBox } from 'react-resizable';
+import {ResizableBox} from 'react-resizable';
 // import '../../../node_modules/react-resizable/css/styles.css';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -44,7 +44,7 @@ class MyEditor extends React.Component {
     this.downloadContent = this.downloadContent.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleSave = this.handleSave.bind(this);
-    this.move = this.move.bind(this);
+    this.turn = this.turn.bind(this);
   }
 
   editorDidMount(editor, monaco) {
@@ -56,16 +56,32 @@ class MyEditor extends React.Component {
     this.setState({code: newValue});
   }
 
-  move(num) {
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
+  async turn(num) {
+    const delay = 750;
+    const div = (num > 0) ? 1 : -1;
+    num = Math.abs(num);
+    while (num > 6) {
+      this.socketRef.current.emit("turn", {u_id: this.state.id, division: 6 * div});
+      num -= 6;
+      this.socketRef.current.emit("get location", this.state.hash);
+      await this.sleep(delay);
+    }
+    if (num > 0)
+      this.socketRef.current.emit("turn", {u_id: this.state.id, division: num * div});
+
+    this.socketRef.current.emit("get location", this.state.hash);
+    await this.sleep(delay / 6 * num);
   }
 
   runCode() {
     this.socketRef.current.emit("reset score", this.state.id);
-    console.log(this.state.id);
     this.socketRef.current.emit("get location", this.state.hash);
     this.handleSave();
-    this.move(10);
+    this.turn(-59);
     // Compiler(this.state.code);
   }
 
@@ -140,7 +156,7 @@ class MyEditor extends React.Component {
             resizeHandles={['n']}
             minConstraints={[window.innerWidth - 400, 32]}
             maxConstraints={[window.innerWidth - 400, window.innerHeight - 100]}
-            handle={<MyHandle />}
+            handle={<MyHandle/>}
             onResize={this.props.onResize}
           >
             <div className="MyEditor__MonacoEditor">
@@ -209,7 +225,7 @@ const CustomHandle = styled.div`
 `;
 
 const DEFAULT_CODE =
-`int a;
+  `int a;
 int a, b;
 int a = 5;
 int b = 3.14;
