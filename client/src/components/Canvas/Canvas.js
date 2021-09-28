@@ -54,7 +54,7 @@ const Canvas = ({canvasHeight}) => {
                 context.closePath();
                 context.fillStrokeShape(shape);
               }}
-              fill={(id === ship.id) ? "#425e17" : "#497e76"}
+              fill={(id === ship.u_id) ? "#425e17" : "#497e76"}
               stroke="black"
               strokeWidth={0.9}
             />
