@@ -9,6 +9,8 @@ import MyEditor from "../Editor/MyEditor";
 import quitGame from '../../assets/quit.svg';
 import './Page.css';
 
+
+
 const Room = () => {
   const [name, setName] = useState(cookies.get('name'));
   const [mainPageOpened, setMainPageOpened] = useState(
@@ -51,7 +53,7 @@ const Room = () => {
               alt='Quit the game'
               onClick={handleClick}
             />
-            <Canvas canvasHeight={canvasHeight} />
+            <Canvas canvasHeight={canvasHeight}/>
             <MyEditor onResize={onResize}/>
           </div>
           <div className="Page__Functional">

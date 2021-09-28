@@ -12,12 +12,6 @@ export default class miniCVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
-	// Visit a parse tree produced by miniCParser#object.
-	visitObject(ctx) {
-	  return this.visitChildren(ctx);
-	}
-
-
 	// Visit a parse tree produced by miniCParser#struct.
 	visitStruct(ctx) {
 	  return this.visitChildren(ctx);
@@ -54,6 +48,12 @@ export default class miniCVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
+	// Visit a parse tree produced by miniCParser#array.
+	visitArray(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
 	// Visit a parse tree produced by miniCParser#loop.
 	visitLoop(ctx) {
 	  return this.visitChildren(ctx);
@@ -74,6 +74,12 @@ export default class miniCVisitor extends antlr4.tree.ParseTreeVisitor {
 
 	// Visit a parse tree produced by miniCParser#jmp.
 	visitJmp(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by miniCParser#name.
+	visitName(ctx) {
 	  return this.visitChildren(ctx);
 	}
 

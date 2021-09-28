@@ -54,23 +54,23 @@ export default class Welcome extends Component {
       }
     })
     this.socket.on("hash of session", hash => {
-      if (!cookies.get('hash')) {
-        cookies.set('hash', hash, {path: '/'});
-      }
-      this.setState({ loggedIn: true });
+      // if (!cookies.get('hash')) {
+      cookies.set('hash', hash, {path: '/'});
+      // }
+      this.setState({loggedIn: true});
     })
   }
 
   handleChange(event) {
-    this.setState({ value: event.target.value});
+    this.setState({value: event.target.value});
   }
 
   handleSubmit(e) {
     e.preventDefault();
 
-    const { value } = this.state;
+    const {value} = this.state;
     if (value.length < 3) {
-      this.setState({ inputError: true });
+      this.setState({inputError: true});
       return;
     }
     cookies.set('name', this.state.value, {path: '/'});
@@ -78,15 +78,15 @@ export default class Welcome extends Component {
       id: cookies.get("id"),
       name: cookies.get("name"),
     };
-    this.setState({ loggedIn: true });
+    this.setState({loggedIn: true});
     this.socket.emit("add user", userObject);
   }
 
   render() {
-    return this.state.loggedIn ? <Redirect to="/game" /> : (
+    return this.state.loggedIn ? <Redirect to="/game"/> : (
       <div className="Welcome">
         <div className="Welcome__Logo">
-          <img src={logo} alt="Code-it logo" onClick={() => window.location.reload()} />
+          <img src={logo} alt="Code-it logo" onClick={() => window.location.reload()}/>
         </div>
         <header className="Welcome-header">
           <p>
@@ -105,7 +105,7 @@ export default class Welcome extends Component {
                   placeholder='Your name'
                   value={this.state.value}
                   onChange={this.handleChange.bind(this)}
-                  onFocus={() => this.setState({ inputError: false })}
+                  onFocus={() => this.setState({inputError: false})}
                 />
                 <span className={`ErrorMessage ${!this.state.inputError ? 'hidden' : ''}`}>
                   Your name must be at least 3 characters long

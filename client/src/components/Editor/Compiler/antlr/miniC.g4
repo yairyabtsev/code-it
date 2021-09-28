@@ -3,33 +3,15 @@ grammar miniC;
 options {
 	language=JavaScript;
 }
-@parser::header
-{
-}
-@parser::members
-{
-}
-@lexer::header
-{
-}
-@lexer::members
-{
-}
-code : object*;
 
-object returns [String txt=""]: (((var_decl | struct) ';') | fun{$txt=$fun.text;});
+code : (var_decl | struct | fun)*;
 
-struct : 'struct' NAME '{' (var_decl ';')* '}';
-fun returns [String txt=""]: (Type| NAME){$txt+="function ";}
-                           NAME{$txt+=$NAME.text;} '('{$txt+="(";}
-                            (Type NAME (',' Type NAME)*)?
-                            ')'{$txt+=")";} '{'{$txt+="{";}
-                            command*
-                            '}'{$txt+="}";};
-var_decl : Type ( NAME | init) (',' NAME | init)*;
-init : NAME ('[' seq ']')? Operator? '=' seq;
+struct : 'struct' name '{' (var_decl ';')* '}';
+fun : (Type| name) name '(' (Type name (',' Type name)*)? ')' ('{' command* '}' | ';');
+var_decl : (Type| name | array) ( name | init) (',' (name | init))* ';';
+init : name (('[' seq ']') | ( '.' name ))* Operator? '=' seq;
 
-seq   : Int | Float | Bool | NAME | NAME '[' seq ']' | '{' seq (',' seq)* '}' | '(' seq ')'
+seq   : Int | Float | Bool | name (('[' seq ']') | ( '.' name ))* | '{' seq (',' seq)* '}' | '(' seq ')'
        | seq Operator seq
        ;
 
@@ -38,23 +20,25 @@ Int : ('-'|'+')? DIGIT+;
 Float : Int '.' DIGIT+;
 Bool : ('true' | 'false');
 
-command : ((seq | var_decl | init | jmp | exit) ';') | cond | loop;
+command : ((seq | init) ';') | var_decl  | jmp | exit | cond | loop;
 
+array : 'Array' '<' Type '>';
 Type : 'int' | 'float' | 'void' | 'bool';
 
-Operator : '+' | '-' | '*' | '%' | '/' | '<<' | '>>' | '&&' | '||' | '|' | '&';
+Operator : '+' | '-' | '*' | '%' | '/' | '<<' | '>>'
+         | '&&' | '||' | '<' | '>' | '==' | '>=' | '<=' | '!='
+         | '|' | '&' | '!';
 
 
-loop : ('while' '('seq ')' '{' command* '}')
-    | ('for' '('seq? ';'seq? ';'seq? ')' '{' command* '}')
-    | ('do' '{'command* '}' 'while' '('seq ')' ';');
-cond : 'if' '('seq ')' ('{' command* '}'| command) ('else' ('{' command* '}'| command))?;
-exit : ('break' | 'continue' | ( 'return' (seq)?));
-jmp : NAME '(' (seq (',' seq)*)? ')';
+loop : ('while' '('Operator? seq ')' '{' command* '}');
+cond : 'if' '(' Operator? seq ')' ('{' command* '}'| command) ('else' ('{' command* '}'| command))?;
+exit : ('break' | 'continue' | ( 'return' (seq)?)) ';';
+jmp : name '(' (seq (',' seq)*)? ');';
 
 
 Whitespace :   [ \t\r\n]+ -> skip;
 Comment : (('//' ~[\r\n]*) | ('/*' .*? '*/')) -> skip;
 
+name : NAME;
 NAME : [a-zA-Z0-9_]+;
 DIGIT : [0-9]+;

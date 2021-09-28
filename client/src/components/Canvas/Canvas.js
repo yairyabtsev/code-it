@@ -6,11 +6,10 @@ import {cookies} from "../../App";
 import io from "socket.io-client";
 
 
-const Canvas = ({ canvasHeight }) => {
+const Canvas = ({canvasHeight}) => {
   const ref = useRef(null);
   const id = cookies.get('id');
   const hash = cookies.get('hash');
-  const {width, height} = useContainerDimensions(ref);//TODO: fix auto update
   const [ships, setShips] = React.useState([
     // {x: 50, y: 50, division: Math.random() * 100, id: id},
     // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
@@ -23,12 +22,14 @@ const Canvas = ({ canvasHeight }) => {
     // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
     // {x: Math.random() * 100, y: Math.random() * 100, division: Math.random() * 100, id: "123"},
   ]);
+  const {width, height} = useContainerDimensions(ref);//TODO: fix auto update
   const div = 3.5;
   const socketRef = useRef();
   useEffect(() => {
     socketRef.current = io.connect('/');
 
     socketRef.current.on("location" + hash, (location) => {
+      console.log(location);
       setShips(location.ships);
       setBullets(location.bullets);
     })

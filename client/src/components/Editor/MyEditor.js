@@ -33,6 +33,7 @@ class MyEditor extends React.Component {
       code: localStorage.getItem('./Compiler/antlr/Examples/test.1c') ?? DEFAULT_CODE,
       toastOpen: false,
       id: cookies.get('id'),
+      hash: cookies.get('hash'),
       width: window.innerWidth - 400,
       height: 250,
     };
@@ -43,6 +44,7 @@ class MyEditor extends React.Component {
     this.downloadContent = this.downloadContent.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleSave = this.handleSave.bind(this);
+    this.move = this.move.bind(this);
   }
 
   editorDidMount(editor, monaco) {
@@ -54,10 +56,17 @@ class MyEditor extends React.Component {
     this.setState({code: newValue});
   }
 
+  move(num) {
+
+  }
+
   runCode() {
-    this.socketRef.current.emit("reset score", this.id);
+    this.socketRef.current.emit("reset score", this.state.id);
+    console.log(this.state.id);
+    this.socketRef.current.emit("get location", this.state.hash);
     this.handleSave();
-    Compiler(this.state.code);
+    this.move(10);
+    // Compiler(this.state.code);
   }
 
   uploadFile(event) {
@@ -199,45 +208,15 @@ const CustomHandle = styled.div`
   cursor: row-resize
 `;
 
-const DEFAULT_CODE = `
-//
-// ....
-//
-
-struct location{
-  float x;
-  float y;
-};
-
-location get_position(int index);
-location get_self_position();
-
-int get_health(int index); 
-int get_self_health();
-
-void hit();
-void shoot();
-
-void turn(float angle); 
-void turn_percent(float angle) {
-  turn(angle * 3,6);
-}
-
-void turn_rad(float angle) {
-  angle %= 2*Pi;
-  turn(angle * 360 / 2*Pi);
-}
-
-int count_enemies(); // not a const
-
-//
-// ....
-//
-
-void play() {
-  // put your code here;
-  // it doesn't have to use infinite loop,
-  // because upon exiting this function,
-  // it will continue to work from the entry point.
-}
-}`;
+const DEFAULT_CODE =
+`int a;
+int a, b;
+int a = 5;
+int b = 3.14;
+int b = -27;
+int a = -42.5;
+int a = 5, b = 6;
+int a = a + b;
+int a = c + a;
+Array<int> b = \{1,2\}; 
+`;

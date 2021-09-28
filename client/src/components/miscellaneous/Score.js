@@ -23,7 +23,7 @@ const Score = () => {
   return (
     <div className="Score">
       <span>Score:</span>&nbsp;{score}<br/>
-      <span>Injuries:</span>&nbsp;{injuries}
+      <span>Damaged:</span>&nbsp;{injuries}
       <div className="Score__Logo">
         <a href="/"><img src={logo} alt="Code-it logo"/></a>
       </div>

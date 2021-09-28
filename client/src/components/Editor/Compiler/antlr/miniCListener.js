@@ -14,15 +14,6 @@ export default class miniCListener extends antlr4.tree.ParseTreeListener {
 	}
 
 
-	// Enter a parse tree produced by miniCParser#object.
-	enterObject(ctx) {
-	}
-
-	// Exit a parse tree produced by miniCParser#object.
-	exitObject(ctx) {
-	}
-
-
 	// Enter a parse tree produced by miniCParser#struct.
 	enterStruct(ctx) {
 	}
@@ -77,6 +68,15 @@ export default class miniCListener extends antlr4.tree.ParseTreeListener {
 	}
 
 
+	// Enter a parse tree produced by miniCParser#array.
+	enterArray(ctx) {
+	}
+
+	// Exit a parse tree produced by miniCParser#array.
+	exitArray(ctx) {
+	}
+
+
 	// Enter a parse tree produced by miniCParser#loop.
 	enterLoop(ctx) {
 	}
@@ -110,6 +110,15 @@ export default class miniCListener extends antlr4.tree.ParseTreeListener {
 
 	// Exit a parse tree produced by miniCParser#jmp.
 	exitJmp(ctx) {
+	}
+
+
+	// Enter a parse tree produced by miniCParser#name.
+	enterName(ctx) {
+	}
+
+	// Exit a parse tree produced by miniCParser#name.
+	exitName(ctx) {
 	}
 
 

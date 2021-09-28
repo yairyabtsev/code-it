@@ -35,12 +35,12 @@ async function updateLocation(data) {
     await mongoClient.connect();
     const db = mongoClient.db("codeitdb");
     const collection = db.collection("location");
+    const qwery = {$inc: data.delta};
+    if (data.hash)
+      qwery.$set = {hash: data.hash};
+    console.log(qwery);
     const result = await collection.findOneAndUpdate(
-      {u_id: data.delta.u_id},
-      {
-        $inc: {x: data.delta.x, y: data.delta.y, division: data.delta.division},
-        $set: {hash: data.hash}
-      },
+      {u_id: data.u_id}, qwery,
       {returnDocument: "after"});
     loc = result.value;
   } catch (err) {
@@ -59,7 +59,6 @@ async function findRoom(u_id, hash) {
     x: Math.random() * 25 + 12.5,
     y: Math.random() * 25 + 12.5,
     division: Math.random() * 100,
-    u_id: u_id,
   }
   try {
     await mongoClient.connect();
@@ -104,7 +103,7 @@ async function findRoom(u_id, hash) {
   } finally {
     await mongoClient.close();
   }
-  return {hash: hash, delta: delta};
+  return {hash: hash, delta: delta, u_id:u_id};
 }
 
 async function getLocation(hash) {
@@ -147,7 +146,7 @@ io.on("connection", socket => {
   const {id} = socket.client;
   socket.emit("your id", socket.id);
   socket.on("reset score", u_id => {
-      resetScore(u_id).then(io.emit("score"+u_id, ({score: 0, injuries: 0})))
+      resetScore(u_id).then(io.emit("score" + u_id, ({score: 0, injuries: 0})));
     }
   );
   socket.on("add user", body => {
@@ -157,8 +156,13 @@ io.on("connection", socket => {
       updateLocation(obj);
     });
   });
-  socket.on("get location", body => {
-    getLocation(body.hash).then(loc => io.emit("location" + body.hash, loc));
+  socket.on("get location", hash => {
+    console.log(hash);
+    getLocation(hash).then(loc => {
+      console.log(loc);
+      io.emit("location" + hash, loc);
+    });
+
   });
   socket.on("send message", body => {
     io.emit("message" + body.hash, body)
