@@ -93,7 +93,8 @@ class MyEditor extends React.Component {
   }
 
   randomCode() {
-    const num = Math.floor(Math.random() * DEFAULT_CODE.length);
+    //const num = Math.floor(Math.random() * DEFAULT_CODE.length);
+    const num = (this.state.idx + 1) % DEFAULT_CODE.length;
     this.setState({code: DEFAULT_CODE[num], idx: num});
   }
 
@@ -104,14 +105,14 @@ class MyEditor extends React.Component {
     if (this.state.idx === 0) {
       this.handleSave();
       while (true) {
-        await this.turn(Math.random() * 100 - 50);
-        await this.move(Math.random() * 50);
+        // await this.turn(Math.random() * 100 - 50);
+        // await this.move(Math.random() * 50);
         this.socketRef.current.emit("shot", this.state.id);
         await this.sleep(750);
       }
     } else if (this.state.idx === 1) {
       while (true) {
-        let a = 100;
+        let a = 55;
         let b = 10;
         while (a > 0) {
           await this.turn(a);
@@ -282,7 +283,7 @@ void main(){
 `,
   `
 void main(){
-  int a = 100;
+  int a = 55;
   int b = 10;
   while (a > 0) {
     turn(a);

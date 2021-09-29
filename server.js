@@ -201,12 +201,25 @@ function sleep(ms) {
 
 async function shot(x, y, division, hash, u_id) {
   const mongoClient = new MongoClient(url, {useNewUrlParser: true, useUnifiedTopology: true});
+  const users = [];
   try {
     await mongoClient.connect();
     const db = mongoClient.db("codeitdb");
     let location = {x: x, y: y, division: division, u_id: u_id, hash: hash, type: 0};
     await db.collection("location").insertOne(location);
-    while (100 >= location.x && location.x >= 0 && 100 >= location.y && location.y >= 0) {
+    while (100 >= location.x && location.x >= 0 && 100 >= location.y && location.y >= 0 && users.length === 0) {
+      const result = (await db.collection("location").find({
+        x: {$gt: location.x - 1.5, $lt: location.x + 1.5},
+        y: {$gt: location.y - 1.5, $lt: location.y + 1.5},
+        type: 1,
+        u_id: {$ne: u_id}
+      }).toArray());
+      for (let i = 0; i < result.length; i++) {
+        const result2 = (await db.collection("users").findOneAndUpdate({u_id: result[i].u_id},
+          {$inc: {injuries: 1}}, {returnDocument: "after"})).value;
+        users.push({u_id: result2.u_id, score: result2.score, injuries: result2.injuries});
+        console.log(users);
+      }
       await sleep(250);
       location.x += Math.cos(location.division / 50 * Math.PI) * 3;
       location.y += Math.sin(location.division / 50 * Math.PI) * 3;
@@ -221,13 +234,18 @@ async function shot(x, y, division, hash, u_id) {
         {returnDocument: "after"})).value;
     }
     await db.collection("location").findOneAndDelete({_id: location._id});
+    if (users.length) {
+      const result = (await db.collection("users").findOneAndUpdate({u_id: u_id},
+        {$inc: {score: users.length}}, {returnDocument: "after"})).value;
+      users.push({u_id: u_id, score: result.score, injuries: result.injuries});
+    }
   } catch (err) {
     console.log(err);
     return false;
   } finally {
     await mongoClient.close();
   }
-  return true;
+  return users.length ? users : false;
 }
 
 io.on("connection", socket => {
@@ -265,7 +283,13 @@ io.on("connection", socket => {
   });
   socket.on("shot", u_id => {
     findLocation(u_id).then(loc =>
-      shot(loc.x, loc.y, loc.division, loc.hash, u_id))
+      shot(loc.x, loc.y, loc.division, loc.hash, u_id)).then(users => {
+      if (users) {
+        users.forEach(user => {
+          io.emit("score" + user.u_id, ({score: user.score, injuries: user.injuries}))
+        });
+      }
+    })
   });
   socket.on("send message", body => {
     io.emit("message" + body.hash, body)
