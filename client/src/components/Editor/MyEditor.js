@@ -30,12 +30,13 @@ class MyEditor extends React.Component {
 
     this.state = {
       editorLanguage: 'c',
-      code: localStorage.getItem('./Compiler/antlr/Examples/test.1c') ?? DEFAULT_CODE,
+      code: localStorage.getItem('./Compiler/antlr/Examples/test.1c') ?? DEFAULT_CODE[0],
       toastOpen: false,
       id: cookies.get('id'),
       hash: cookies.get('hash'),
       width: window.innerWidth - 400,
       height: 250,
+      idx: 0,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -45,6 +46,7 @@ class MyEditor extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.turn = this.turn.bind(this);
+    this.randomCode = this.randomCode.bind(this);
   }
 
   editorDidMount(editor, monaco) {
@@ -90,17 +92,38 @@ class MyEditor extends React.Component {
     await this.sleep(delay / min * num);
   }
 
+  randomCode() {
+    const num = Math.floor(Math.random() * DEFAULT_CODE.length);
+    this.setState({code: DEFAULT_CODE[num], idx: num});
+  }
+
   async runCode() {
     this.socketRef.current.emit("reset score", this.state.id);
     this.socketRef.current.emit("get location", {u_id: this.state.id, hash: this.state.hash});
-    this.handleSave();
-    while (true) {
-      await this.turn(Math.random() * 100 - 50);
-      await this.move(Math.random() * 50);
-      this.socketRef.current.emit("shot", this.state.id);
-      // break;
-      await this.sleep(750);
+
+    if (this.state.idx === 0) {
+      this.handleSave();
+      while (true) {
+        await this.turn(Math.random() * 100 - 50);
+        await this.move(Math.random() * 50);
+        this.socketRef.current.emit("shot", this.state.id);
+        await this.sleep(750);
+      }
+    } else if (this.state.idx === 1) {
+      while (true) {
+        let a = 100;
+        let b = 10;
+        while (a > 0) {
+          await this.turn(a);
+          await this.move(b * 3);
+          this.socketRef.current.emit("shot", this.state.id);
+          await this.sleep(750);
+          a -= 10;
+          b -= 1;
+        }
+      }
     }
+
     // Compiler(this.state.code);
   }
 
@@ -135,7 +158,7 @@ class MyEditor extends React.Component {
 
     if (clear) {
       localStorage.removeItem('savedCode');
-      this.setState({code: '', toastOpen: true});
+      // this.setState({code: '', toastOpen: true});
     }
   }
 
@@ -203,7 +226,7 @@ class MyEditor extends React.Component {
               <img src={uploadIcon} alt="upload"/>
             </label>
             <div className="MyEditor__ButtonsGroup">
-              <Button>Random</Button>
+              <Button onClick={this.randomCode}>Random</Button>
               <Button onClick={this.runCode}>Run</Button>
               <Button onClick={this.downloadContent}>Download</Button>
               <Button onClick={this.handleSave}>Save</Button>
@@ -224,7 +247,8 @@ class MyEditor extends React.Component {
       </>
     );
   }
-};
+}
+;
 
 export default MyEditor;
 
@@ -243,15 +267,30 @@ const CustomHandle = styled.div`
   cursor: row-resize
 `;
 
-const DEFAULT_CODE =
-  `int a;
-int a, b;
-int a = 5;
-int b = 3.14;
-int b = -27;
-int a = -42.5;
-int a = 5, b = 6;
-int a = a + b;
-int a = c + a;
-Array<int> b = \{1,2\}; 
-`;
+const DEFAULT_CODE = [
+  `
+void main(){
+  float a = rand();
+  a = a * 100;
+  a -= 50;
+  turn(a);
+  a = rand();
+  a *= 50;
+  move(a);
+  shot();
+}
+`,
+  `
+void main(){
+  int a = 100;
+  int b = 10;
+  while (a > 0) {
+    turn(a);
+    int c = b * 3;
+    move(c);
+    shot();
+    a -= 10;
+    b -= 1;
+  }
+}
+`];
